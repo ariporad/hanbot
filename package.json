@@ -1,0 +1,17 @@
+{
+	"name": "hanbot",
+	"version": "1.0.0",
+	"description": "A bot for the Olin Class of 2024",
+	"main": "dist/index.js",
+	"repository": "https://github.com/ariporad/hanbot",
+	"author": "Ari Porad <ari@ariporad.com>",
+	"license": "MIT",
+	"private": true,
+	"scripts": {
+		"build": "tsc",
+		"watch": "tsc --watch"
+	},
+	"devDependencies": {
+		"typescript": "^3.9.2"
+	}
+}
