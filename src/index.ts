@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { TextChannel } from 'discord.js';
 import { DISCORD_ADMITTED_ROLE, DISCORD_WELCOME_CHANNEL, DISCORD_TOKEN } from './config';
 import COMMANDS, { CommandHandler } from './commands';
 import { sendWelcomeMessage } from './commands/welcome';
@@ -12,6 +12,7 @@ client.once('ready', () => {
 client.on('message', async (message) => {
 	try {
 		if (process.env.NODE_ENV === 'development') console.log('Got Message:', message.content);
+		if (!(message.channel instanceof TextChannel)) return;
 
 		for (const [, command, args] of message.content.matchAll(
 			/^[ \t]*!([a-zA-Z0-9_-]+)(|([ \t\S]+))$/gmsu,

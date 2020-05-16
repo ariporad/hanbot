@@ -2,6 +2,7 @@ import Discord from 'discord.js';
 import zoom from './zoom';
 import welcome from './welcome';
 import ping from './ping';
+import help from './help';
 
 export type CommandHandler = (
 	args: string,
@@ -15,6 +16,7 @@ const COMMANDS: { [command: string]: null | CommandHandler } = {
 	ping,
 	zoom,
 	welcome,
+	help,
 };
 
 export default COMMANDS;

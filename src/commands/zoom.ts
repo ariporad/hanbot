@@ -2,6 +2,9 @@ import Discord from 'discord.js';
 import request from 'request-promise';
 import { ZOOM_MEETING_ID, getZoomToken } from '../config';
 
+/**
+ * Check the status of the Zoom call.
+ */
 export default async function zoom(args: string, message: Discord.Message) {
 	const { status, join_url } = await request.get({
 		uri: `https://api.zoom.us/v2/meetings/${ZOOM_MEETING_ID}`,
