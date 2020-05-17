@@ -1,0 +1,9 @@
+# This file used for running from VS Code
+# TODO: Keep in sync with .envrc
+export DISCORD_WELCOME_CHANNEL=general
+export DISCORD_ADMITTED_ROLE=Admitted
+export DISCORD_TOKEN=
+
+export ZOOM_API_KEY=
+export ZOOM_API_SECRET=
+export ZOOM_MEETING_ID=
