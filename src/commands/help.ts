@@ -11,7 +11,8 @@ I am ${'@Hanbot'}, the Olin Class of 2024's helpful bot. (Version ${version})
 In addition to sending a welcome message to new users when they join the server, I have a number of commands you can use. Just send \`!command\` in any channel (preferably ${'#bot-spam'}). You don't need to @mention me, and I don't respond to DMs.
 
 Commands:
-- \`!zoom\`: Get information about our Zooming, and see if anyone is on Zoom right now.
+- \`!zoom\`: See if anyone is on Zoom right now.
+- \`!zoominfo\`: Information about our Zooming habits.
 - \`!ping\`: A simple command for testing.
 - \`!help\`: Show this message.
 - \`!welcome\`: Demonstrate the welcome message sent to new users.

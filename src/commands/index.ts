@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import zoom from './zoom';
+import { zoomInfo, zoomStatus } from './zoom';
 import welcome from './welcome';
 import ping from './ping';
 import help from './help';
@@ -14,7 +14,8 @@ const COMMANDS: { [command: string]: null | CommandHandler } = {
 	__proto__: null,
 
 	ping,
-	zoom,
+	zoom: zoomStatus,
+	zoominfo: zoomInfo,
 	welcome,
 	help,
 };
