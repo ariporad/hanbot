@@ -8,13 +8,20 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
+		"prestart": "yarn build",
+		"start": "node ./dist/index.js",
 		"build": "tsc",
-		"watch": "tsc --watch"
+		"watch": "tsc --watch",
+		"clean": "rm -rf dist",
+		"predev": "yarn clean && yarn build",
+		"dev": "concurrently -c bgBlue,bgGreen.black -k -n tsc,bot \"tsc --watch\" \"nodemon -w dist dist/index.js\""
 	},
 	"devDependencies": {
 		"@types/jsonwebtoken": "^8.5.0",
 		"@types/node": "^14.0.1",
 		"@types/request-promise": "^4.1.46",
+		"concurrently": "^5.2.0",
+		"nodemon": "^2.0.4",
 		"request": "^2.88.2",
 		"typescript": "^3.9.2"
 	},
