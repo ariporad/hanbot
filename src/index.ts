@@ -35,18 +35,31 @@ client.on('message', async (message) => {
 });
 
 client.on('guildMemberAdd', (member) => {
+	console.log(`New Member! ${member.displayName} (${member.id})`);
+
 	if (DISCORD_ADMITTED_ROLE) {
+		console.log(`====> Giving new member role: ${DISCORD_ADMITTED_ROLE}`);
 		const admittedRole = member.guild.roles.cache.find(
 			(role) => role.name === DISCORD_ADMITTED_ROLE,
 		);
 
-		if (!admittedRole) return;
+		if (!admittedRole) {
+			console.error(`====> ERROR! Couldn't find admitted role: ${DISCORD_ADMITTED_ROLE}`);
+			return;
+		}
 
 		member.roles.add(admittedRole);
+	} else {
+		console.log(`====> DISCORD_ADMITTED_ROLE not set, not assigning role`);
 	}
 
 	if (DISCORD_WELCOME_CHANNEL) {
-		sendWelcomeMessage(member, DISCORD_WELCOME_CHANNEL);
+		console.log(
+			`====> Sending welcome message to ${member.displayName} in #${DISCORD_WELCOME_CHANNEL}`,
+		);
+		sendWelcomeMessage(member.guild, member, DISCORD_WELCOME_CHANNEL);
+	} else {
+		console.log(`====> DISCORD_WELCOME_CHANNEL not set, not sending welcome message`);
 	}
 });
 
