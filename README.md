@@ -58,6 +58,14 @@ You can also run and debug from within VS Code, which will work properly with th
 
 In development, you can run `yarn dev`, which will clean the project, build, and run the bot. It will also watch changes, and subsequently recompile the project and reboot the bot.
 
+**Warning:** If you run the bot in development with the real Discord tokens, it won't prevent the production version from running--the practical effect of which is that the bot will respond to all queries twice.
+
+## Hosting
+
+The bot running on Discord as @Hanbot#9541 is hosted on Heroku [here][heroku-live]. It's owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com]>. Feel free to contact him (or ping him on the Discord) if something's gone wrong or if you have questions.
+
+All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to Heroku. This usually takes only a few minutes.
+
 ## License
 
 Hanbot is licensed under the MIT License:
@@ -75,3 +83,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 [zoom-setup]: https://marketplace.zoom.us/docs/guides/build/jwt-app
 [create-bot-user]: https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot
 [add-bot-to-server]: https://discordjs.guide/preparations/adding-your-bot-to-servers.html
+[heroku-live]: https://olin-2024-hanbot.herokuapp.com/
+[@ariporad]: https://github.com/ariporad
+[ari@ariporad.com]: mailto:ari@ariporad.com?subject=Hanbot
+[travis-ci]: https://travis-ci.com/github/ariporad/hanbot
