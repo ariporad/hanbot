@@ -36,6 +36,13 @@ export async function getZoomInfo() {
 export async function processWebhookEvent(event: ZoomEvent) {
 	console.log('Processing Zoom Webhook:');
 	console.log(event);
+
+	// We toString both IDs because they're numerical and I don't want funny type errors.
+	if (event.payload.object.id.toString() !== ZOOM_MEETING_ID.toString()) {
+		console.log(`Webhook is for a different meeting (${event.payload.object.id}), ignoring.`);
+		return;
+	}
+
 	switch (event.event) {
 		// We don't want to trust Zoom's webhooks for synchronization reasons, so we re-fetch the status
 		case 'meeting.started':
