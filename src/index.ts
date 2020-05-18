@@ -2,8 +2,17 @@ import Discord, { TextChannel } from 'discord.js';
 import { DISCORD_ADMITTED_ROLE, DISCORD_WELCOME_CHANNEL, DISCORD_TOKEN } from './config';
 import COMMANDS, { CommandHandler } from './commands';
 import { sendWelcomeMessage } from './commands/welcome';
+import createApp from './webhooks';
+import { createServer } from 'http';
 
 const client = new Discord.Client();
+const app = createApp();
+const server = createServer(app);
+
+server.listen(process.env.PORT || 8080, () => {
+	const { address, port } = server.address() as any;
+	console.log(`Webhook Server listening on http://${address}:${port}`);
+});
 
 client.once('ready', () => {
 	console.log('Connected to Discord!');

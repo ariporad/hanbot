@@ -1,5 +1,10 @@
 import { sign } from 'jsonwebtoken';
 
+// We have to require this because Typescript can't handle it.
+export const { version } = require('../package.json');
+
+export const START_TIME = new Date();
+
 function getEnvVar(name: string, errorMessage: string = ''): string {
 	if (typeof process.env[name] === 'string' && process.env[name]) {
 		return process.env[name] as string;

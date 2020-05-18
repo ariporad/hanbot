@@ -1,8 +1,6 @@
 import Discord from 'discord.js';
 import { formatMessage, panic } from '../helpers';
-
-// We have to require this because Typescript can't handle it.
-const { version } = require('../../package.json');
+import { version } from '../config';
 
 export default function help(args: string, message: Discord.Message) {
 	return formatMessage(message.guild || panic())`
