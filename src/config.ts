@@ -15,7 +15,16 @@ function getEnvVar(name: string, errorMessage: string = ''): string {
 export const ZOOM_MEETING_ID = getEnvVar('ZOOM_MEETING_ID', 'Need a Zoom Meeting ID to Monitor!');
 
 const ZOOM_API_KEY = getEnvVar('ZOOM_API_KEY', 'Need a Zoom JWT API Key!');
+
 const ZOOM_API_SECRET = getEnvVar('ZOOM_API_SECRET', 'Need a Zoom API Secret Token!');
+
+export const ZOOM_WEBHOOK_SECRET = process.env.ZOOM_WEBHOOK_SECRET || null;
+
+if (!ZOOM_WEBHOOK_SECRET) {
+	console.warn(
+		'WARNING: $ZOOM_WEBHOOK_SECRET is not set. Zoom webhook messages will not be verified.',
+	);
+}
 
 export const DISCORD_TOKEN = getEnvVar('DISCORD_TOKEN', 'Need a Discord Bot User Secret!');
 export const DISCORD_ADMITTED_ROLE = process.env.DISCORD_ADMITTED_ROLE || null;

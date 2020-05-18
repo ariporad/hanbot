@@ -6,4 +6,5 @@ export DISCORD_TOKEN=
 
 export ZOOM_API_KEY=
 export ZOOM_API_SECRET=
+export ZOOM_WEBHOOK_SECRET=
 export ZOOM_MEETING_ID=

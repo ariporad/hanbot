@@ -20,6 +20,8 @@ Hanbot OK (v${version})
 Running Since ${START_TIME.toISOString()}.
 
 Current Zoom Status: ${active ? `Active, ${participants} participants` : `Inactive`}.
+
+Git Commit Hash: ${process.env.SOURCE_VERSION || 'Unknown'}
 `.trim(),
 			);
 			res.end();
