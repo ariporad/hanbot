@@ -14,7 +14,8 @@ Commands:
 - \`!ping\`: A simple command for testing.
 - \`!help\`: Show this message.
 - \`!welcome\`: Demonstrate the welcome message sent to new users.
+- \`!debuginfo\`: Dump lots of information that might be helpful for debugging.
 
-I was built by ${'@Ari (Han X)'} in the service of our glorious leader, ${'@Han (Han)'}. Ping ${'%Bot Builder'} if I'm acting up or if you need help. My code is available on Github, and PRs are welcome if you'd like to add functionality: https://github.com/ariporad/hanbot. I'm currently hosted on ${'@Ari (Han X)'}'s laptop, but I'll be moving soon to proper hosting.
+I was built by ${'@Ari (Han X)'} in the service of our glorious leader, ${'@Han (Han)'}. Ping ${'%Bot Builder'} if I'm acting up or if you need help. My code is available on Github, and PRs are welcome if you'd like to add functionality: https://github.com/ariporad/hanbot.
 	`;
 }
