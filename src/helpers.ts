@@ -10,6 +10,22 @@ export function panic(message?: string): never {
 }
 
 /**
+ * Format a date in 'M/D/YYYY, H:M:S PM PT (Xd, Xh, Xm, Xs)' format.
+ */
+export const formatUptime = (since: Date): string => {
+	const uptime = Date.now() - since.getTime();
+
+	const dateStr = since.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+
+	const days = Math.round(uptime / 1000 / 60 / 60 / 24);
+	const hours = Math.round((uptime / 1000 / 60 / 60) % 24);
+	const minutes = Math.round((uptime / 1000 / 60) % 60);
+	const seconds = Math.round((uptime / 1000) % 60);
+
+	return `${dateStr} PT (${days}d, ${hours}h, ${minutes}m, ${seconds}s)`;
+};
+
+/**
  * Format a discord message.
  *
  * Use it like this:

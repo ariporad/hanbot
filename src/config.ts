@@ -5,19 +5,6 @@ export const { version } = require('../package.json');
 
 export const START_TIME = new Date();
 
-export const getFormattedStartTime = (): string => {
-	const uptime = Date.now() - START_TIME.getTime();
-
-	const dateStr = START_TIME.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
-
-	const days = Math.round(uptime / 1000 / 60 / 60 / 24);
-	const hours = Math.round((uptime / 1000 / 60 / 60) % 24);
-	const minutes = Math.round((uptime / 1000 / 60) % 60);
-	const seconds = Math.round((uptime / 1000) % 60);
-
-	return `${dateStr} PT (${days}d, ${hours}h, ${minutes}m, ${seconds}s)`;
-};
-
 // A random number used to differentiate multiple instances running at the same time.
 export const FAVORITE_NUMBER = Math.floor(Math.random() * 100);
 
