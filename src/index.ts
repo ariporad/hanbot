@@ -4,9 +4,10 @@ import COMMANDS, { CommandHandler } from './commands';
 import { sendWelcomeMessage } from './commands/welcome';
 import createApp from './webhooks';
 import { createServer } from 'http';
+import { updateDiscordStatusFromZoom } from './zoom';
 
 const client = new Discord.Client();
-const app = createApp();
+const app = createApp(client);
 const server = createServer(app);
 
 server.listen(process.env.PORT || 8080, () => {
@@ -16,6 +17,7 @@ server.listen(process.env.PORT || 8080, () => {
 
 client.once('ready', () => {
 	console.log('Connected to Discord!');
+	updateDiscordStatusFromZoom(client);
 });
 
 client.on('message', async (message) => {
