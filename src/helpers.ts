@@ -22,7 +22,7 @@ export const formatUptime = (since: Date): string => {
 	const minutes = Math.round((uptime / 1000 / 60) % 60);
 	const seconds = Math.round((uptime / 1000) % 60);
 
-	return `${dateStr} PT (${days}d, ${hours}h, ${minutes}m, ${seconds}s)`;
+	return `${dateStr} PT (${days}d, ${hours}h, ${minutes}m, ${seconds}s ago)`;
 };
 
 /**
