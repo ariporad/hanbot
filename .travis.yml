@@ -1,13 +1,13 @@
 language: node_js
 node_js:
-    - 12
+- 12
 script:
-    - yarn travis
+- yarn travis
 deploy:
-    provider: heroku
-    api_key:
-        secure: Gn8m6iTzRsriKixMvRbXcKq8Ykoq0RY9LhE22PLOE/a6PgVdlB4NaqVcFKBfPDr4OkM/6MEigc1ZmF5vQ3gMxHzRcURH4PpKc1dhzWkcVRw9IQGwALaVUnADcazSkvfJEOF3wC0DebFa6tcuYaT+sG+XIr5udW1MbPsSID14JxtCF9aw5eze1bFKxwqU+XdCePJYwTzZPH2+Gj8OhfqzgJJ5rh0wIijiio24KhH9YDBlR/XuA6uZ8wxbc9W0sFqb9UuMRHRicpHQwhb90Qp+69WghnVuyoaQruKbP4qRvRpX0ga+Ie1KnC8kVa2S/7nlHGUBKv4nSYYbCND+Un7Is8khrRuDwTNlMc0YMr13/Iyser1Nx/USWqd60vgfvvX7MQxjTZmk6edORfdJxbN6pO8y/RTLlDaqQS25cjGvpIuyuUOH+hy+hjbncbDdye8lhCd0rukI9zBReQ+o2EJTKPx56v80hvB5+FhNFsYkANka3EOL6ISigb5saEn2AvSff00Mha2TkCqnKQp4D1JBJQMCL/xVJvsaHUq4ag5xLDC/gPQPuI3UxP5YEt5PZThPkuCEqISe1sRfShVdHq0RZHGVQ3t3QxINd/o2CpboZqgtI7Umdqcat7p3duqHvLqcYAeHjwDi/ArYLSXXXMXLgZompBxQFCH+Dt5x/3QhhqA=
-    app: olin-2024-hanbot
-    on:
-        repo: ariporad/hanbot
-    skip_cleanup: 'true'
+  provider: heroku
+  api_key:
+    secure: gasxg1Kpt40gsSD8TM1gc6lQbbNESI7APvIVoH2fZWQZs284k89JNuls+x2E5+SyH0Wss13qWndAMBgCRGmoUNLM5J9uvX4JWHibzAqOLRPnMmE+kjgF9fiWfeFN+5jAT8GKMLXJD/U8ZuEhT2u+Dit2jzeFuI3WJqN7cXOuTtm81ZVUxvTP05GUJjATFSDflvbJFhoePHoRadat0Z+LuNcjb1KELH83EhNWnk70dnp+3i/oqVYSrh0IUcuZ+MRe4SWuI+pFYhVdGxUfQ4WBWtJo/kA9N+3Fn8uQZiCF74NQbkKiJ8MWwA4drFMLcBhOdE4Ag1MpQrM32RJ4HUI35lIrV3evNqx8D863sUaTNHaCcJmYXZq1oBFSlWazFEL0pLQRrjsQkdN/LMlT+CXvrPdpEt/iWFWGXOG20igm5vaxRYK+jhuyR2J9G6NB4n78QfZq6Vt4mClO+ZrrSK8m6dYBEaqnBPHqkoPXzKEKIFS3f3btsA69pIPrNryKz5BxXpO02WrALfOr60Z3K/VgCdO+x4oMQ+vxEu9AHJlpOGjXBuMFpwgBy5QN116vFzpJQQYxHnmwEofXzrg8oM/1V/BLbnBMBeQsydlmIg/3m0ouoTYg1lPvh30WdVDLXCiEZHAVCTSjnG3qfln5M3rpUoKSws1J+ICDqME/1UKHNPI=
+  app: olin-2024-hanbot
+  on:
+    repo: ariporad/hanbot
+  skip_cleanup: 'true'
