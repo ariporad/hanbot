@@ -16,7 +16,7 @@ server.listen(process.env.PORT || 8080, () => {
 });
 
 client.once('ready', () => {
-	console.log('Connected to Discord!');
+	console.log('Connected to Discord! Client ID:', client.user?.id);
 	updateDiscordStatusFromZoom(client);
 });
 
@@ -26,7 +26,12 @@ client.on('message', async (message) => {
 		if (!(message.channel instanceof TextChannel)) return;
 
 		for (const [, command, args] of message.content.matchAll(
-			/^[ \t]*!([a-zA-Z0-9_-]+)(|([ \t\S]+))$/gmsu,
+			// Parse both !command and @Hanbot command
+			// XXX: Should we use proper mention parsing instead of this regex?
+			new RegExp(
+				`^[ \\t]*(?:!|<@!?${client.user?.id}>[ \\t]*!?)([a-zA-Z0-9_-]+)(|([ \\t\\S]+))$`,
+				'gmsu',
+			),
 		)) {
 			const cmd = command.toLowerCase();
 			if ({}.hasOwnProperty.call(COMMANDS, cmd) && typeof COMMANDS[cmd] === 'function') {
