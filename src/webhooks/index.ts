@@ -1,7 +1,6 @@
 import express from 'express';
 import makeZoomWebhookHandler from './zoom';
-import { version, START_TIME } from '../config';
-import { getZoomInfo } from '../zoom';
+import { getDebugInfo } from '../commands/debugInfo';
 
 export default function createApp() {
 	const app = express();
@@ -11,17 +10,8 @@ export default function createApp() {
 	app.post('/webhooks/zoom', makeZoomWebhookHandler());
 	app.get('*', async (req, res) => {
 		try {
-			const { active, participants } = await getZoomInfo();
 			res.status(200);
-			res.write(
-				`
-Hanbot OK (v${version})
-
-Running Since ${START_TIME.toISOString()}.
-
-Current Zoom Status: ${active ? `Active, ${participants} participants` : `Inactive`}.
-`.trim(),
-			);
+			res.write(await getDebugInfo());
 			res.end();
 		} catch (err) {
 			console.error(`ERROR(app.get(*))!`);
