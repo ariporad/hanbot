@@ -61,8 +61,8 @@ export async function updateDiscordStatusFromZoom(discord: Client, zoomInfo?: Zo
 }
 
 export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
-	console.log('Processing Zoom Webhook:');
-	console.log(event);
+	console.log('Processing Zoom Webhook Event:');
+	console.log(JSON.stringify(event, null, 2));
 
 	// We toString both IDs because they're numerical and I don't want funny type errors.
 	if (event.payload.object.id.toString() !== ZOOM_MEETING_ID.toString()) {
