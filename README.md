@@ -62,9 +62,11 @@ In development, you can run `yarn dev`, which will clean the project, build, and
 
 ## Hosting
 
-The bot running on Discord as @Hanbot#9541 is hosted on Heroku [here][heroku-live]. It's owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com]>. Feel free to contact him (or ping him on the Discord) if something's gone wrong or if you have questions.
+The bot running on Discord as @Hanbot#9541 is hosted on Heroku [here][heroku-live]. It's owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]>. Feel free to contact him (or ping him on the Discord) if something's gone wrong or if you have questions.
 
 All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to Heroku. This usually takes only a few minutes.
+
+**An Important Note:** Heroku restarts every dyno every ~24 hours. It's important that this reboot does not occur during the times of 6PM-6AM ET (the times when we are usually on Zoom), because if it does, it will lose track of the current Zoom status. To reset this cycle, just run `heroku ps:restart -a olin-2024-hanbot` some time in the morning or early afternoon ET. (See [#1](https://github.com/ariporad/hanbot/issues/1))
 
 ## License
 
