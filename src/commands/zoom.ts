@@ -17,7 +17,7 @@ export async function zoomInfo(args: string, message: Discord.Message) {
 	return `
 On Wednesdays, we play Jackbox on Zoom! (and on other days too.)
 
-Most evenings, generally from 10-2 PM ET, we hang out on Zoom to talk and play games (most commonly, The Jackbox Party Pack).
+Most evenings (generally between 10PM and 5AM ET), we hang out on Zoom to talk and play games (most commonly, The Jackbox Party Pack).
 
 Our standing Zoom meeting can be found here: ${join_url}
 
