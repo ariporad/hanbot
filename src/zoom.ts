@@ -1,7 +1,13 @@
 import request from 'request-promise';
 import { ResponseError } from './webhooks/helpers';
-import { ZOOM_MEETING_ID, getZoomToken } from './config';
-import { Client } from 'discord.js';
+import {
+	ZOOM_MEETING_ID,
+	getZoomToken,
+	ZOOM_TIME_THRESHOLD,
+	ZOOM_TIME_ANNOUNCEMENT_CHANNEL,
+} from './config';
+import { Client, TextChannel } from 'discord.js';
+import { formatMessage } from './helpers';
 
 interface ZoomInfo {
 	meetingInfo: any;
@@ -87,6 +93,27 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
 				break;
 			}
 			participants++;
+			if (
+				ZOOM_TIME_THRESHOLD &&
+				ZOOM_TIME_ANNOUNCEMENT_CHANNEL &&
+				participants === ZOOM_TIME_THRESHOLD
+			) {
+				await Promise.all(
+					discord.guilds.cache.map(async (guild) => {
+						const channel = guild.channels.cache.find(
+							(ch) =>
+								ch.name.toLowerCase() ===
+								ZOOM_TIME_ANNOUNCEMENT_CHANNEL?.toLowerCase(),
+						) as TextChannel | undefined;
+
+						if (!channel) return;
+
+						await channel.send(formatMessage(guild)`
+🚨 Paging everybody, it's ${`%Zoom Time`}! This is NOT A DRILL! 🚨
+						`);
+					}),
+				);
+			}
 			break;
 		}
 		case 'meeting.participant_left': {

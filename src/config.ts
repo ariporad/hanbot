@@ -29,6 +29,14 @@ if (!ZOOM_WEBHOOK_SECRET) {
 	);
 }
 
+export const ZOOM_TIME_THRESHOLD = parseInt(process.env.ZOOM_TIME_THRESHOLD || 'NaN', 10) || null;
+export const ZOOM_TIME_ANNOUNCEMENT_CHANNEL = ZOOM_TIME_THRESHOLD
+	? getEnvVar(
+			'ZOOM_TIME_ANNOUNCEMENT_CHANNEL',
+			'Need a Zoom Time Announcement Channel if $ZOOM_TIME_THRESHOLD is set.',
+	  )
+	: null;
+
 export const DISCORD_TOKEN = getEnvVar('DISCORD_TOKEN', 'Need a Discord Bot User Secret!');
 export const DISCORD_ADMITTED_ROLE = process.env.DISCORD_ADMITTED_ROLE || null;
 export const DISCORD_WELCOME_CHANNEL = process.env.DISCORD_WELCOME_CHANNEL || null;

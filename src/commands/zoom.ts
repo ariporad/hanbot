@@ -12,7 +12,7 @@ export async function zoomInfo(args: string, message: Discord.Message) {
 
 	const statusMessage = active
 		? `There are ${participantsStr} people on the Zoom call right now, so hop on!`
-		: "There's nobody on Zoom right now. If you wanted, you could ping `@here` to see if anyone wants to talk. Then, just click the link to join the Zoom call.";
+		: "There's nobody on Zoom right now. If you wanted, you could ping `@here` or `@Zoom Time` to see if anyone wants to talk. Then, just click the link to join the Zoom call.";
 
 	return `
 On Wednesdays, we play Jackbox on Zoom! (and on other days too.)
@@ -21,7 +21,9 @@ Most evenings (generally between 10PM and 5AM ET), we hang out on Zoom to talk a
 
 Our standing Zoom meeting can be found here: ${join_url}
 
-${statusMessage}`.trim();
+${statusMessage}
+
+Want a ping whenever people are on Zoom? Give yourself the \`Zoom Time\` roll!`.trim();
 }
 
 export async function zoomStatus(args: string, message: Discord.Message) {
