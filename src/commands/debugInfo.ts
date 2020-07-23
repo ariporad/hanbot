@@ -5,7 +5,7 @@ import { Message } from 'discord.js';
 import { formatMessage, panic, formatUptime } from '../helpers';
 
 export async function getDebugInfo(): Promise<string> {
-	const { active, participants } = await getZoomInfo();
+	const { active, participants, hasSeenStart } = await getZoomInfo();
 
 	return [
 		'Hanbot OK\n',
@@ -16,7 +16,12 @@ export async function getDebugInfo(): Promise<string> {
 			['Hostname', hostname()],
 			['Ultimate Answer', '42'],
 			'',
-			['Current Zoom Status', active ? `Active, ${participants} participants` : `Inactive`],
+			['Zoom Active?', active],
+			['Zoom Seen Start?', hasSeenStart],
+			active && [
+				'Zoom Participants',
+				participants.map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
+			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],
 			'',
 			process.env.HEROKU_APP_ID && ['Heroku App ID', process.env.HEROKU_APP_ID],

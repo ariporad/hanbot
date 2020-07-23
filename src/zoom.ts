@@ -9,14 +9,20 @@ import {
 import { Client, TextChannel } from 'discord.js';
 import { formatMessage } from './helpers';
 
-interface ZoomInfo {
+export interface ZoomInfo {
 	meetingInfo: any;
 	active: boolean;
-	participants: number;
+	hasSeenStart: boolean;
+	participants: ZoomParticipant[];
+}
+
+interface ZoomParticipant {
+	id: string;
+	name: string;
 }
 
 let hasSeenStart: boolean = false;
-let participants: number = 0;
+let participants: ZoomParticipant[] = [];
 
 /**
  * Check the status of the Zoom call.
@@ -38,22 +44,24 @@ export async function getZoomInfo(): Promise<ZoomInfo> {
 
 	if (!active) {
 		hasSeenStart = true;
-		participants = 0;
+		participants = [];
 	}
 
-	if (!hasSeenStart) participants = -1;
+	if (!hasSeenStart) participants = [];
 
-	return { meetingInfo, active, participants };
+	return { meetingInfo, active, hasSeenStart, participants };
 }
 
 export async function updateDiscordStatusFromZoom(discord: Client, zoomInfo?: ZoomInfo) {
 	if (!zoomInfo) zoomInfo = await getZoomInfo();
 
 	if (zoomInfo.active) {
+		// Curently, the outer ternary is redundant because status is only set when zoomInfo.active is true
 		const status = zoomInfo.active
-			? // We can't use zoomInfo.participants because, in `processWebhookEvent`, it's set before participants is updated
-			  hasSeenStart
-				? `with ${participants} people on Zoom`
+			? hasSeenStart && participants.length >= 0
+				? `with ${
+						participants.length === 1 ? `1 person` : `${participants.length} people`
+				  } on Zoom`
 				: 'on Zoom'
 			: 'with nobody'; /* currently disabled */
 
@@ -92,11 +100,16 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
 				);
 				break;
 			}
-			participants++;
+
+			participants.push({
+				name: event.payload.object.participant.user_name,
+				id: event.payload.object.participant.user_id,
+			});
+
 			if (
 				ZOOM_TIME_THRESHOLD &&
 				ZOOM_TIME_ANNOUNCEMENT_CHANNEL &&
-				participants === ZOOM_TIME_THRESHOLD
+				participants.length === ZOOM_TIME_THRESHOLD
 			) {
 				await Promise.all(
 					discord.guilds.cache.map(async (guild) => {
@@ -124,13 +137,11 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
 				);
 				break;
 			}
-			if (participants >= 1) {
-				participants--;
-			} else {
-				console.log(
-					'WARNING(Webhook): Zoom participant left while the meeting had no participants. Ignoring.',
-				);
-			}
+
+			participants = participants.filter(
+				(participant) => participant.id !== event.payload.object.participant.user_id,
+			);
+
 			break;
 		}
 		default: {
