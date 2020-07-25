@@ -23,6 +23,7 @@ export async function getDebugInfo(): Promise<string> {
 				participants.map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
 			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],
+			process.env.TRAVIS_COMMIT && ['\nGit Commit ID', process.env.TRAVIS_COMMIT],
 			'',
 			process.env.HEROKU_APP_ID && ['Heroku App ID', process.env.HEROKU_APP_ID],
 			process.env.HEROKU_APP_NAME && ['Heroku App Name', process.env.HEROKU_APP_NAME],
@@ -34,6 +35,10 @@ export async function getDebugInfo(): Promise<string> {
 			process.env.HEROKU_RELEASE_VERSION && [
 				'Heroku Release Version',
 				process.env.HEROKU_RELEASE_VERSION,
+			],
+			process.env.TRAVIS_BUILD_NUMBER && [
+				'Built by Travis Job',
+				process.env.TRAVIS_BUILD_NUMBER,
 			],
 			process.env.HEROKU_SLUG_DESCRIPTION && [
 				'Heroku Slug Description',

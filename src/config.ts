@@ -1,4 +1,8 @@
 import { sign } from 'jsonwebtoken';
+import dotenv from "dotenv";
+
+// load environment variables from .env
+dotenv.config();
 
 // We have to require this because Typescript can't handle it.
 export const { version } = require('../package.json');
