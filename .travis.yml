@@ -11,3 +11,6 @@ deploy:
   on:
     repo: ariporad/hanbot
   skip_cleanup: 'true'
+before_install:
+- openssl aes-256-cbc -K $encrypted_9b645a4101e5_key -iv $encrypted_9b645a4101e5_iv
+  -in deploy_ssh_key.enc -out deploy_ssh_key -d
