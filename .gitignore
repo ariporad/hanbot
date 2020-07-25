@@ -5,6 +5,7 @@
 dist
 .env
 .envrc
+deploy_ssh_key
 
 ### Node ###
 # Logs
