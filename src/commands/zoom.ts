@@ -14,7 +14,7 @@ async function generateZoomStatus(zoomInfo?: ZoomInfo): Promise<string> {
 		: `Come join ${participantsNumberStr} on Zoom!${
 				participants.length < 2
 					? ''
-					: '\n' + participants.map(({ name }) => `\n\t- ${name}`)
+					: '\n' + participants.map(({ name }) => `\n\t- ${name}`).join('')
 		  }`;
 }
 
@@ -34,5 +34,6 @@ Want to get a ping whenever people are on Zoom? Give yourself the \`Zoom Time\` 
 }
 
 export async function zoomStatus(args: string, message: Discord.Message) {
-	await message.reply(await generateZoomStatus());
+	const info = await getZoomInfo();
+	await message.reply(`${await generateZoomStatus(info)}\n\nLink: ${info.meetingInfo.join_url}`);
 }
