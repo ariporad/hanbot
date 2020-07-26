@@ -9,8 +9,6 @@ DEPLOY_DIR="./latest"
 TEMP_DIR="./staged"
 # server to connect to
 TARGET="hanbot@hanbot.elviswolcott.com"
-# file to run
-ENTRY="index.js"
 # name to give job (mostly for debugging on server)
 JOB_NAME="hanbot"
 
@@ -50,6 +48,6 @@ rm -rf "${DEPLOY_DIR}"
 mv "${TEMP_DIR}" "${DEPLOY_DIR}"
 rm -rf "${TEMP_DIR}"
 cd "${DEPLOY_DIR}"
-pm2 start "${BUILD_DIR}/${ENTRY}" --name "${JOB_NAME}"
+pm2 start "${BUILD_DIR}" --name "${JOB_NAME}"
 pm2 save
 RESTART
