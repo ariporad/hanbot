@@ -58,15 +58,11 @@ In development, you can run `yarn dev`, which will clean the project, build, and
 
 ## Hosting
 
-The bot running on Discord as @Hanbot#9541 is hosted on an VPS [here][hanbot-live]. It's owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]>. Feel free to contact him (or ping him on the Discord) if something's gone wrong or if you have questions.
+The bot running on Discord as @Hanbot#9541 is hosted on an VPS [here][hanbot-live]. The bot is owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]> and Elvis Wolcott ([@elviswolcott][]) owns the VPS. Feel free to contact them (or ping them on the Discord) if something's gone wrong or if you have questions.
 
 All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to to the VPS. This usually takes only a few minutes.
 
-The VPS is running Ubuntu 18 with [pm2][pm2], NodeJs, and NGINX as the reverse proxy.
-
-Alternatively, it is possible to deploy Hanbot to Heroku by replacing `travis.yml` with the contents of `travis.yml.heroku`.
-
-**An Important Note:** Heroku restarts every dyno every ~24 hours. It's important that this reboot does not occur during the times of 6PM-6AM ET (the times when we are usually on Zoom), because if it does, it will lose track of the current Zoom status. To reset this cycle, just run `heroku ps:restart -a olin-2024-hanbot` some time in the morning or early afternoon ET. These reboots may prevent some features from functioning correctly. (See [#1](https://github.com/ariporad/hanbot/issues/1))
+The VPS is running Ubuntu 18 with [pm2][pm2], NodeJS, and NGINX as the reverse proxy.
 
 ## License
 

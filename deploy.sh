@@ -33,7 +33,6 @@ TRAVIS_COMMIT=${TRAVIS_COMMIT}
 
 # --------- Deploy Steps --------- #
 # remove extra files
-find "${BUILD_DIR}" -name "*.map" -type f -delete
 rm "${BUILD_DIR}/.tsBuildInfo"
 # transfer the build to the target
 rsync -r --delete-after --quiet "${TRAVIS_BUILD_DIR}/${BUILD_DIR}" "${TARGET}:${TEMP_DIR}"
