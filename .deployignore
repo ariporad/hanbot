@@ -1,0 +1,19 @@
+# files not to deploy
+node_modules
+.vscode
+src
+.deployignore
+.env.example
+.gitattributes
+.gitignore
+.travis.yml
+.deploy.sh
+deploy_ssh_key.enc
+deploy_ssh_key.pub
+han.jpg
+han.png
+mean-girls.jpg
+README.md
+tsconfig.json
+yarn.lock
+deploy.sh
