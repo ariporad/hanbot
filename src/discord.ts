@@ -10,7 +10,7 @@ const getActiveDiscordUsers = createSelector(
 	getLinkedAccounts, 
 	getParticipants, 
 	(linkedAccounts, participants) => {
-		return participants.map(({ id }) => linkedAccounts.byId[id].discord)
+		return participants.map(({ id }) => linkedAccounts.byId[id]?.discord).filter(Boolean);
 });
 
 const getZoomInfo = createSelector(

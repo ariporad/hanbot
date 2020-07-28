@@ -29,7 +29,7 @@ export async function getDebugInfo(): Promise<string> {
 			],
 			[
 				'Known Users',
-				zoomUsers.allIds.map(id => zoomUsers.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
+				Object.keys(zoomUsers.byId).map(id => zoomUsers.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
 			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],
 			process.env.TRAVIS_COMMIT && ['\nGit Commit ID', process.env.TRAVIS_COMMIT],

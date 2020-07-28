@@ -7,7 +7,6 @@ interface ZoomState {
       name: string;
     };
   };
-  allIds: string[];
   online: string[];
   temporary: string[];
   hasSeenStart: boolean;
@@ -16,7 +15,6 @@ interface ZoomState {
 
 const initialState: ZoomState = {
   byId: {},
-  allIds: [],
   online: [],
   temporary: [],
   hasSeenStart: false,
@@ -59,7 +57,6 @@ const { reducer, actions, name } = createSlice({
     },
     userJoined: (state, { payload }: PayloadAction<{ temporary: boolean }> & UserEventAction) => {
       state.byId[payload.id] = payload;
-      state.allIds.push(payload.id);
       if (payload.temporary) {
         state.temporary.push(payload.id);
       }
@@ -91,7 +88,7 @@ const getHasSeenStart = createSelector(getZoomUsers, (zoomUsers) => zoomUsers.ha
 
 const getUserByName = (zoomName: string) => (state: RootState): string | null => {
   const zoomUsers = getZoomUsers(state);
-  const matching = zoomUsers.allIds
+  const matching = Object.keys(zoomUsers.byId)
     .map(id => zoomUsers.byId[id])
     .filter(({ name }) => name.toLowerCase() === zoomName.toLowerCase());
   return matching.length === 1 ? matching[0].id : null;
