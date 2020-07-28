@@ -5,6 +5,7 @@ import {
 	getZoomToken,
 	ZOOM_TIME_THRESHOLD,
 	ZOOM_TIME_ANNOUNCEMENT_CHANNEL,
+	ZOOM_TIME_DEBOUNCE_HOURS,
 } from './config';
 import { Client, TextChannel } from 'discord.js';
 import { formatMessage } from './helpers';
@@ -22,6 +23,9 @@ export interface ZoomInfo {
 	hasSeenStart: boolean;
 	participants: ZoomParticipant[];
 }
+
+
+let lastZoomTime: number = -1; // Date.now() format
 
 /**
  * Check the status of the Zoom call.
@@ -80,8 +84,18 @@ export async function processWebhookEvent(discord: Client,  event: ZoomEvent) {
 			if (
 				ZOOM_TIME_THRESHOLD &&
 				ZOOM_TIME_ANNOUNCEMENT_CHANNEL &&
-				participants.length === ZOOM_TIME_THRESHOLD
+				participants.length === ZOOM_TIME_THRESHOLD &&
+				Date.now() - lastZoomTime >= ZOOM_TIME_DEBOUNCE_HOURS * 60 * 60 * 10000
 			) {
+				lastZoomTime = Date.now();
+				const participantsStr =
+					participants.length === 1
+						? participants[0].name
+						: `${participants
+								.slice(0, -1)
+								.map((p) => p.name)
+								.join(',')}, and ${participants[participants.length - 1].name}`;
+
 				await Promise.all(
 					discord.guilds.cache.map(async (guild) => {
 						const channel = guild.channels.cache.find(
@@ -93,7 +107,7 @@ export async function processWebhookEvent(discord: Client,  event: ZoomEvent) {
 						if (!channel) return;
 
 						await channel.send(formatMessage(guild)`
-🚨 Paging everybody, it's ${`%Zoom Time`}! This is NOT A DRILL! 🚨
+🚨 Paging everybody, ${participantsStr} are starting a call, it's ${`%Zoom Time`}! 🚨
 						`);
 					}),
 				);

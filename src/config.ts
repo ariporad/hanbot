@@ -34,6 +34,8 @@ if (!ZOOM_WEBHOOK_SECRET) {
 }
 
 export const ZOOM_TIME_THRESHOLD = parseInt(process.env.ZOOM_TIME_THRESHOLD || 'NaN', 10) || null;
+export const ZOOM_TIME_DEBOUNCE_HOURS =
+	parseInt(process.env.ZOOM_TIME_DEBOUNCE_HOURS || 'NaN', 10) || 0;
 export const ZOOM_TIME_ANNOUNCEMENT_CHANNEL = ZOOM_TIME_THRESHOLD
 	? getEnvVar(
 			'ZOOM_TIME_ANNOUNCEMENT_CHANNEL',

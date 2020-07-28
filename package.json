@@ -1,6 +1,6 @@
 {
 	"name": "hanbot",
-	"version": "1.4.0",
+	"version": "1.4.2",
 	"description": "A bot for the Olin Class of 2024",
 	"main": "dist/index.js",
 	"repository": "https://github.com/ariporad/hanbot",
