@@ -1,4 +1,4 @@
-import { version, START_TIME, FAVORITE_NUMBER } from '../config';
+import { version, START_TIME, FAVORITE_NUMBER, ZOOM_MEETING_ID } from '../config';
 import { getZoomInfo } from '../zoom';
 import { hostname } from 'os';
 import { Message } from 'discord.js';
@@ -17,6 +17,7 @@ export async function getDebugInfo(): Promise<string> {
 			['Hostname', hostname()],
 			['Ultimate Answer', '42'],
 			'',
+			['Zoom Meeting ID', ZOOM_MEETING_ID],
 			['Zoom Active?', active],
 			['Zoom Seen Start?', hasSeenStart],
 			active && [
