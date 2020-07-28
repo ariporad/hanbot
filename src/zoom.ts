@@ -118,9 +118,10 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
 				const participantsStr =
 					participants.length === 1
 						? participants[0].name
-						: `${participants.slice(0, -1).join(',')}, and ${
-								participants[participants.length - 1]
-						  }`;
+						: `${participants
+								.slice(0, -1)
+								.map((p) => p.name)
+								.join(',')}, and ${participants[participants.length - 1].name}`;
 
 				await Promise.all(
 					discord.guilds.cache.map(async (guild) => {
