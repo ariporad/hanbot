@@ -10,7 +10,7 @@ async function generateZoomStatus(): Promise<string> {
 	const participants = getParticipants(state);
 
 	const participantsNumberStr =
-		participants.length === 1 ? participants[0] : `these ${participants.length} people`;
+		participants.length === 1 ? participants[0].name : `these ${participants.length} people`;
 
 	return !active
 		? "There's nobody on Zoom right now. If you wanted, you could ping `@here` or `@Zoom Time` to see if anyone wants to talk. Then, just click the link to join the Zoom call."
