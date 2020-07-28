@@ -48,6 +48,8 @@ export const DISCORD_ADMITTED_ROLE = process.env.DISCORD_ADMITTED_ROLE || null;
 export const DISCORD_ACTIVE_ROLE = getEnvVar('DISCORD_ACTIVE_ROLE', 'Need a Active Zoom Member Role!')
 export const DISCORD_WELCOME_CHANNEL = process.env.DISCORD_WELCOME_CHANNEL || null;
 
+export const PRODUCTION = process.env.NODE_ENV === "production";
+
 if (!DISCORD_ADMITTED_ROLE) {
 	console.warn('WARNING: $DISCORD_ADMITTED_ROLE is not set. No role will be added to new users.');
 }

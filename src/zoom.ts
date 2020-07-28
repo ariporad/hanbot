@@ -6,6 +6,7 @@ import {
 	ZOOM_TIME_THRESHOLD,
 	ZOOM_TIME_ANNOUNCEMENT_CHANNEL,
 	ZOOM_TIME_DEBOUNCE_HOURS,
+	PRODUCTION,
 } from './config';
 import { Client, TextChannel } from 'discord.js';
 import { formatMessage } from './helpers';
@@ -48,22 +49,22 @@ export async function updateZoomStatus(): Promise<string> {
 	// status change
 	if (wasActive !== active) {
 		if (active) {
-			dispatch(callStarted);
+			dispatch(callStarted());
 		} else {
-			dispatch(callEnded);
+			dispatch(callEnded());
 		}
 	}
 	return meetingInfo.join_url;
 }
 
 export async function processWebhookEvent(discord: Client,  event: ZoomEvent) {
-	console.log('Processing Zoom Webhook Event:');
-	console.log(JSON.stringify(event, null, 2));
+	console.log(`Processing Zoom Webhook Event: ${event.event}`);
+	if (!PRODUCTION) console.log(JSON.stringify(event, null, 2));
 
 	const { id: meeting } = event.payload.object;
 
 	// We toString both IDs because they're numerical and I don't want funny type errors.
-	if (meeting.toString() !== ZOOM_MEETING_ID.toString()) {
+	if (!meeting || meeting.toString() !== ZOOM_MEETING_ID.toString()) {
 		console.log(`Webhook is for a different meeting (${meeting}), ignoring.`);
 		return;
 	}
