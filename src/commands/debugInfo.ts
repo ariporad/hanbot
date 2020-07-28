@@ -11,6 +11,7 @@ export async function getDebugInfo(): Promise<string> {
 		'Hanbot OK\n',
 		...([
 			['Version', version],
+			['Environment', process.env.NODE_ENV || 'unknown (defaults to development)'],
 			['Favorite Number', FAVORITE_NUMBER],
 			['Running Since', formatUptime(START_TIME)],
 			['Hostname', hostname()],

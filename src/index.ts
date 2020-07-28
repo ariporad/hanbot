@@ -16,7 +16,12 @@ server.listen(process.env.PORT || 8080, () => {
 });
 
 client.once('ready', () => {
-	console.log('Connected to Discord! Client ID:', client.user?.id);
+	console.log(
+		'Connected to Discord! Client ID:',
+		client.user?.id,
+		'Username:',
+		client.user?.username,
+	);
 	updateDiscordStatusFromZoom(client);
 });
 
