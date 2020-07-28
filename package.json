@@ -27,11 +27,13 @@
 		"typescript": "^3.9.2"
 	},
 	"dependencies": {
+		"@reduxjs/toolkit": "^1.4.0",
 		"discord.js": "^12.2.0",
 		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"jsonwebtoken": "^8.5.1",
-		"request-promise": "^4.2.5",
-		"request": "^2.88.2"
+		"redux": "^4.0.5",
+		"request": "^2.88.2",
+		"request-promise": "^4.2.5"
 	}
 }

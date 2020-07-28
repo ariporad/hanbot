@@ -1,4 +1,4 @@
-import Discord, { TextBasedChannelFields, PartialTextBasedChannelFields } from 'discord.js';
+import Discord, { TextBasedChannelFields, PartialTextBasedChannelFields, Collection } from 'discord.js';
 
 /**
  * Inconvinently, `throw` is not an expression in Javascript, so you can't do foo() || throw ...;
@@ -65,3 +65,7 @@ export const formatMessage = (guild: Discord.Guild) => (
 
 	return output.trim();
 };
+
+export const mapToArray = <T>(map: Collection<string, T>): Array<T> => {
+	return Array.from(map.values());
+}

@@ -1,11 +1,15 @@
 import { version, START_TIME, FAVORITE_NUMBER } from '../config';
-import { getZoomInfo } from '../zoom';
+import { updateZoomStatus } from '../zoom';
 import { hostname } from 'os';
 import { Message } from 'discord.js';
 import { formatMessage, panic, formatUptime } from '../helpers';
+import { getState } from '../store';
+import { getZoomUsers } from "../store/zoom";
+
 
 export async function getDebugInfo(): Promise<string> {
-	const { active, participants, hasSeenStart } = await getZoomInfo();
+	await updateZoomStatus();
+	const zoomUsers = getZoomUsers(getState());
 
 	return [
 		'Hanbot OK\n',
@@ -16,11 +20,15 @@ export async function getDebugInfo(): Promise<string> {
 			['Hostname', hostname()],
 			['Ultimate Answer', '42'],
 			'',
-			['Zoom Active?', active],
-			['Zoom Seen Start?', hasSeenStart],
-			active && [
+			['Zoom Active?', zoomUsers.active],
+			['Zoom Seen Start?', zoomUsers.hasSeenStart],
+			zoomUsers.active && [
 				'Zoom Participants',
-				participants.map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
+				zoomUsers.online.map(id => zoomUsers.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
+			],
+			[
+				'Known Users',
+				zoomUsers.allIds.map(id => zoomUsers.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
 			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],
 			process.env.TRAVIS_COMMIT && ['\nGit Commit ID', process.env.TRAVIS_COMMIT],

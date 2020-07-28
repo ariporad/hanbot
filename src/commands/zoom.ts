@@ -1,11 +1,16 @@
 import Discord from 'discord.js';
-import { getZoomInfo, ZoomInfo } from '../zoom';
+import { updateZoomStatus } from '../zoom';
+import { getState } from '../store';
+import { getCallIsActive, getHasSeenStart, getParticipants } from '../store/zoom';
 
-async function generateZoomStatus(zoomInfo?: ZoomInfo): Promise<string> {
-	const { active, participants, hasSeenStart } = zoomInfo || (await getZoomInfo());
+async function generateZoomStatus(): Promise<string> {
+	const state = getState();
+	const active = getCallIsActive(state);
+	const hasSeenStart = getHasSeenStart(state);
+	const participants = getParticipants(state);
 
 	const participantsNumberStr =
-		participants.length === 1 ? participants[0].name : `these ${participants.length} people`;
+		participants.length === 1 ? participants[0] : `these ${participants.length} people`;
 
 	return !active
 		? "There's nobody on Zoom right now. If you wanted, you could ping `@here` or `@Zoom Time` to see if anyone wants to talk. Then, just click the link to join the Zoom call."
@@ -19,21 +24,21 @@ async function generateZoomStatus(zoomInfo?: ZoomInfo): Promise<string> {
 }
 
 export async function zoomInfo(args: string, message: Discord.Message) {
-	const info = await getZoomInfo();
+	const joinUrl = await updateZoomStatus();
 
 	return `
 On Wednesdays, we play Jackbox on Zoom! (and on other days too.)
 
 Most evenings (generally between 10PM and 5AM ET), we hang out on Zoom to talk and play games (most commonly, The Jackbox Party Pack).
 
-Our standing Zoom meeting can be found here: ${info.meetingInfo.join_url}
+Our standing Zoom meeting can be found here: ${joinUrl}
 
-${await generateZoomStatus(info)}
+${await generateZoomStatus()}
 
 Want to get a ping whenever people are on Zoom? Give yourself the \`Zoom Time\` roll!`.trim();
 }
 
 export async function zoomStatus(args: string, message: Discord.Message) {
-	const info = await getZoomInfo();
-	await message.reply(`${await generateZoomStatus(info)}\n\nLink: ${info.meetingInfo.join_url}`);
+	const joinLink = await updateZoomStatus();
+	await message.reply(`${await generateZoomStatus()}\n\nLink: ${joinLink}`);
 }

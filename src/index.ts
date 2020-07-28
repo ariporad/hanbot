@@ -4,7 +4,7 @@ import COMMANDS, { CommandHandler } from './commands';
 import { sendWelcomeMessage } from './commands/welcome';
 import createApp from './webhooks';
 import { createServer } from 'http';
-import { updateDiscordStatusFromZoom } from './zoom';
+import { syncDiscordStatus } from './discord';
 
 const client = new Discord.Client();
 const app = createApp(client);
@@ -17,7 +17,6 @@ server.listen(process.env.PORT || 8080, () => {
 
 client.once('ready', () => {
 	console.log('Connected to Discord! Client ID:', client.user?.id);
-	updateDiscordStatusFromZoom(client);
 });
 
 client.on('message', async (message) => {
@@ -80,3 +79,6 @@ client.on('guildMemberAdd', (member) => {
 });
 
 client.login(DISCORD_TOKEN);
+
+// keep the discord status in sync
+syncDiscordStatus(client);

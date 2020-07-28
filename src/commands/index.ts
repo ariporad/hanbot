@@ -3,6 +3,7 @@ import { zoomInfo, zoomStatus } from './zoom';
 import welcome from './welcome';
 import ping from './ping';
 import help from './help';
+import link from './link';
 import { debugInfo } from './debugInfo';
 
 export type CommandHandler = (
@@ -20,6 +21,7 @@ const COMMANDS: { [command: string]: null | CommandHandler } = {
 	debuginfo: debugInfo,
 	welcome,
 	help,
+	link
 };
 
 export default COMMANDS;
