@@ -9,6 +9,7 @@ interface ZoomState {
   };
   allIds: string[];
   online: string[];
+  temporary: string[];
   hasSeenStart: boolean;
   active: boolean;
 };
@@ -17,6 +18,7 @@ const initialState: ZoomState = {
   byId: {},
   allIds: [],
   online: [],
+  temporary: [],
   hasSeenStart: false,
   active: false
 };
@@ -29,32 +31,37 @@ const { reducer, actions, name } = createSlice({
     callStarted: (state) => {
       state.active = true;
       state.online = [];
+      state.temporary = [];
     },
     callEnded: (state) => {
       state.active = false;
       state.hasSeenStart = true;
       state.online = [];
+      // remove temp users
+      state.temporary.forEach(id => {
+        delete state.byId[id];
+      });
+      state.temporary = [];
     },
     userLeft: (state, { payload }: UserEventAction) => {
-      const knownUser = state.byId.hasOwnProperty(payload.id);
-      if (!knownUser) {
-        state.byId[payload.id] = payload;
-        state.allIds.push(payload.id);
+      // always go for the most up to date name
+      if(state.byId.hasOwnProperty(payload.id)) {
+        state.byId[payload.id].name = payload.name;
+      }
+        
+      if (!state.active) {
+        console.log(
+          'WARNING: Zoom participant left while meeting was inactive. Ignoring.',
+        );
       } else {
-        if (!state.active) {
-          console.log(
-            'WARNING: Zoom participant left while meeting was inactive. Ignoring.',
-          );
-        } else {
-          state.online = state.online.filter( (id) => id !== payload.id );
-        }
+        state.online = state.online.filter( (id) => id !== payload.id );
       }
     },
-    userJoined: (state, { payload }: UserEventAction) => {
-      const knownUser = state.byId.hasOwnProperty(payload.id);
-      if (!knownUser) {
-        state.byId[payload.id] = payload;
-        state.allIds.push(payload.id);
+    userJoined: (state, { payload }: PayloadAction<{ temporary: boolean }> & UserEventAction) => {
+      state.byId[payload.id] = payload;
+      state.allIds.push(payload.id);
+      if (payload.temporary) {
+        state.temporary.push(payload.id);
       }
       if (!state.active) {
 				console.log(

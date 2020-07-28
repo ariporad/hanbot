@@ -57,15 +57,20 @@ export async function updateZoomStatus(): Promise<string> {
 	return meetingInfo.join_url;
 }
 
+const zoomId = (event: ZoomParticipantJoinedEvent | ZoomParticipantLeftEvent) => {
+	const participant = event.payload.object.participant
+	return participant.id || `${event.payload.object.uuid}.${participant.user_id}`;
+}
+
 export async function processWebhookEvent(discord: Client,  event: ZoomEvent) {
 	console.log(`Processing Zoom Webhook Event: ${event.event}`);
 	if (!PRODUCTION) console.log(JSON.stringify(event, null, 2));
 
-	const { id: meeting } = event.payload.object;
+	const { id: meetingId } = event.payload.object;
 
 	// We toString both IDs because they're numerical and I don't want funny type errors.
-	if (!meeting || meeting.toString() !== ZOOM_MEETING_ID.toString()) {
-		console.log(`Webhook is for a different meeting (${meeting}), ignoring.`);
+	if (!meetingId || meetingId.toString() !== ZOOM_MEETING_ID.toString()) {
+		console.log(`Webhook is for a different meeting (${meetingId}), ignoring.`);
 		return;
 	}
 
@@ -77,9 +82,9 @@ export async function processWebhookEvent(discord: Client,  event: ZoomEvent) {
 			break;
 		}
 		case 'meeting.participant_joined': {
+			const participant = event.payload.object.participant;
 			await updateZoomStatus();
-			const { participant } = event.payload.object;
-			dispatch(userJoined({ id: participant.user_id, name: participant.user_name }));
+			dispatch(userJoined({ id: zoomId(event), name: participant.user_name, temporary: !Boolean(participant.id) }));
 			
 			const participants = getParticipants(getState());
 			if (
@@ -117,8 +122,7 @@ export async function processWebhookEvent(discord: Client,  event: ZoomEvent) {
 		}
 		case 'meeting.participant_left': {
 			await updateZoomStatus();
-			const { participant } = event.payload.object;
-			dispatch(userLeft({ id: participant.user_id, name: participant.user_name }));
+			dispatch(userLeft({ id: zoomId(event), name: event.payload.object.participant.user_name }));
 			break;
 		}
 		default: {
