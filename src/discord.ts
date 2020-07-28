@@ -1,9 +1,8 @@
-import { Client } from "discord.js";
+import { Client, GuildMember } from "discord.js";
 import { onSelector } from "./store";
 import { createSelector } from "@reduxjs/toolkit";
 import { getLinkedAccounts } from "./store/link";
 import { getParticipants, getHasSeenStart, getCallIsActive } from "./store/zoom";
-import { mapToArray } from "./helpers";
 import { DISCORD_ACTIVE_ROLE } from "./config";
 
 
@@ -29,22 +28,33 @@ const getZoomInfo = createSelector(
 export const syncDiscordStatus = (discord: Client) => {
   // get the active role on each server
   discord.guilds.cache.forEach(async (guild) => {
+    console.log(`Syncing to ${guild.name}`);
     const roles = await guild.roles.fetch();
     // role to apply/remove
-    const activeRole = mapToArray(roles.cache.filter(role => role.name === DISCORD_ACTIVE_ROLE))[1];
+    const activeRole = roles.cache.find(role => role.name === DISCORD_ACTIVE_ROLE);
+    if (!activeRole) {
+      throw `${guild.name} does not have a ${DISCORD_ACTIVE_ROLE} role.`;
+    }
+
     
     // keep roles in sync
     onSelector(getActiveDiscordUsers, async (activeUsers) => {
       // ensure members are up to date
       await guild.members.fetch();
       // update roles
-      guild.members.cache.forEach(member => {
+      // filter is to prevent spamming the API with meaningless requests
+      const shouldUpdateMember = (member: GuildMember): boolean => {
+        return activeUsers.indexOf(member.id) > -1 || Boolean(member.roles.cache.find(role => role.id === activeRole.id));
+      }
+      guild.members.cache.filter(shouldUpdateMember).forEach(async member => {
+        // bypass cache
+        await member.fetch();
         if (activeUsers.indexOf(member.id) > -1) {
           // use should have role
-          member.roles.add(activeRole);
+          await member.roles.add(activeRole.id);
         } else {
           // take it away
-          member.roles.remove(activeRole);
+          await member.roles.remove(activeRole.id);
         }
       });
     });

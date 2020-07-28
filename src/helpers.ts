@@ -65,7 +65,3 @@ export const formatMessage = (guild: Discord.Guild) => (
 
 	return output.trim();
 };
-
-export const mapToArray = <T>(map: Collection<string, T>): Array<T> => {
-	return Array.from(map.values());
-}

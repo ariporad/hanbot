@@ -1,10 +1,11 @@
-import { configureStore, combineReducers } from "@reduxjs/toolkit";
+import { configureStore, combineReducers, current } from "@reduxjs/toolkit";
 import { readFileSync, writeFileSync } from "fs";
 import { version as latest } from "../config";
 import zoomUsersReducer, { name as zoomUsersSlice} from "./zoom";
 import linkedAccountsReducer, { name as linkedAccountsSlice } from "./link";
+import { resolve } from "path";
 
-const PERSISTED_STATE = "../savedState.json"
+const PERSISTED_STATE = resolve("../savedState.json");
 
 const rootReducer = combineReducers({
   [zoomUsersSlice]: zoomUsersReducer,

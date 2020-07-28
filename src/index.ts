@@ -1,5 +1,5 @@
 import Discord, { TextChannel } from 'discord.js';
-import { DISCORD_ADMITTED_ROLE, DISCORD_WELCOME_CHANNEL, DISCORD_TOKEN } from './config';
+import { DISCORD_ADMITTED_ROLE, DISCORD_WELCOME_CHANNEL, DISCORD_TOKEN, PRODUCTION } from './config';
 import COMMANDS, { CommandHandler } from './commands';
 import { sendWelcomeMessage } from './commands/welcome';
 import createApp from './webhooks';
@@ -26,7 +26,7 @@ client.once('ready', () => {
 
 client.on('message', async (message) => {
 	try {
-		if (process.env.NODE_ENV === 'development') console.log('Got Message:', message.content);
+		if (!PRODUCTION) console.log('Got Message:', message.content);
 		if (!(message.channel instanceof TextChannel)) return;
 
 		for (const [, command, args] of message.content.matchAll(
@@ -83,7 +83,7 @@ client.on('guildMemberAdd', (member) => {
 	}
 });
 
-client.login(DISCORD_TOKEN);
-
-// keep the discord status in sync
-syncDiscordStatus(client);
+client.login(DISCORD_TOKEN).then(() => {
+	// keep the discord status in sync
+	syncDiscordStatus(client);
+});
