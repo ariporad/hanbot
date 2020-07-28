@@ -45,6 +45,7 @@ export const ZOOM_TIME_ANNOUNCEMENT_CHANNEL = ZOOM_TIME_THRESHOLD
 
 export const DISCORD_TOKEN = getEnvVar('DISCORD_TOKEN', 'Need a Discord Bot User Secret!');
 export const DISCORD_ADMITTED_ROLE = process.env.DISCORD_ADMITTED_ROLE || null;
+export const DISCORD_ACTIVE_ROLE = getEnvVar('DISCORD_ACTIVE_ROLE', 'Need a Active Zoom Member Role!')
 export const DISCORD_WELCOME_CHANNEL = process.env.DISCORD_WELCOME_CHANNEL || null;
 
 if (!DISCORD_ADMITTED_ROLE) {

@@ -4,6 +4,7 @@ import { createSelector } from "@reduxjs/toolkit";
 import { getLinkedAccounts } from "./store/link";
 import { getParticipants, getHasSeenStart, getCallIsActive } from "./store/zoom";
 import { mapToArray } from "./helpers";
+import { DISCORD_ACTIVE_ROLE } from "./config";
 
 
 const getActiveDiscordUsers = createSelector(
@@ -24,15 +25,13 @@ const getZoomInfo = createSelector(
   })
 )
 
-const ACTIVE_ROLE = "Zoomer";
-
 // keeps discord in sync with the server side state
 export const syncDiscordStatus = (discord: Client) => {
   // get the active role on each server
   discord.guilds.cache.forEach(async (guild) => {
     const roles = await guild.roles.fetch();
     // role to apply/remove
-    const activeRole = mapToArray(roles.cache.filter(role => role.name === ACTIVE_ROLE))[1];
+    const activeRole = mapToArray(roles.cache.filter(role => role.name === DISCORD_ACTIVE_ROLE))[1];
     
     // keep roles in sync
     onSelector(getActiveDiscordUsers, async (activeUsers) => {
