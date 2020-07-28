@@ -54,11 +54,13 @@ You can also run and debug from within VS Code, which will work properly with th
 
 In development, you can run `yarn dev`, which will clean the project, build, and run the bot. It will also watch changes, and subsequently recompile the project and reboot the bot.
 
+For development purposes, we use the `@Hanbot Beta#9729` user. It's possible that multiple instances may be running at the same time.
+
 **Warning:** If you run the bot in development with the real Discord tokens, it won't prevent the production version from running--the practical effect of which is that the bot will respond to all queries twice.
 
 ## Hosting
 
-The bot running on Discord as @Hanbot#9541 is hosted on an VPS [here][hanbot-live]. The bot is owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]> and Elvis Wolcott ([@elviswolcott][]) owns the VPS. Feel free to contact them (or ping them on the Discord) if something's gone wrong or if you have questions.
+The bot running on Discord as `@Hanbot#9541` is hosted on an VPS [here][hanbot-live]. The bot is owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]> and Elvis Wolcott ([@elviswolcott][]) owns the VPS. Feel free to contact them (or ping them on the Discord) if something's gone wrong or if you have questions.
 
 All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to to the VPS. This usually takes only a few minutes.
 
