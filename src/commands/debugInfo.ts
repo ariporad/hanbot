@@ -1,5 +1,5 @@
-import { version, START_TIME, FAVORITE_NUMBER } from '../config';
 import { updateZoomStatus } from '../zoom';
+import { version, START_TIME, FAVORITE_NUMBER, ZOOM_MEETING_ID } from '../config';
 import { hostname } from 'os';
 import { Message } from 'discord.js';
 import { formatMessage, panic, formatUptime } from '../helpers';
@@ -21,6 +21,7 @@ export async function getDebugInfo(): Promise<string> {
 			['Hostname', hostname()],
 			['Ultimate Answer', '42'],
 			'',
+			['Zoom Meeting ID', ZOOM_MEETING_ID],
 			['Zoom Active?', zoomInfo.active],
 			['Zoom Seen Start?', zoomInfo.hasSeenStart],
 			zoomInfo.active && [

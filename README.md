@@ -71,6 +71,14 @@ All commits to `master` on this repo are automatically built by [Travis CI][trav
 
 The VPS is running Ubuntu 18 with [pm2][pm2], NodeJS, and NGINX as the reverse proxy.
 
+## Contributing
+
+Please feel free to contribute to Hanbot! This bot belongs to all of us, and I'd love to have others contribute functionality (or just suggestions). Feel free to fork the project and open a PR, or just [create an issue](https://github.com/ariporad/hanbot/issues/new).
+
+If you need help, feel free to reach out to me on Discord (I'm `Ari (Han X)`).
+
+If you do contribute code, please make sure that your code works, and run `yarn lint` to ensure it's formatted properly (using [prettier][]). Ping me on the Discord and I'll set you up with the relevant credentials and tokens for testing your changes.
+
 ## License
 
 Hanbot is licensed under the MIT License:
@@ -93,3 +101,4 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 [ari@ariporad.com]: mailto:ari@ariporad.com?subject=Hanbot
 [travis-ci]: https://travis-ci.com/github/ariporad/hanbot
 [pm2]: https://pm2.keymetrics.io/
+[prettier]: https://prettier.io/
