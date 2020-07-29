@@ -27,14 +27,14 @@ export async function getDebugInfo(): Promise<string> {
 				'Zoom Participants',
 				zoomInfo.online
 					.map((id) => zoomInfo.byId[id])
-					.map(({ name, id }) => `\n\t- ${name} (${id})`)
+					.map(({ name, zoomId }) => `\n\t- ${name} (${zoomId})`)
 					.join(''),
 			],
 			[
 				'Known Users',
 				Object.keys(zoomInfo.byId)
 					.map((id) => zoomInfo.byId[id])
-					.map(({ name, id }) => `\n\t- ${name} (${id})`)
+					.map(({ name, zoomId }) => `\n\t- ${name} (${zoomId})`)
 					.join(''),
 			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],

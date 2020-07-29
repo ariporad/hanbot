@@ -97,7 +97,7 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
       await updateZoomStatus();
       dispatch(
         userJoined({
-          id: zoomId(event),
+          zoomId: zoomId(event),
           name: participant.user_name,
           temporary: !Boolean(participant.id),
         })
@@ -115,9 +115,9 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
           participants.length === 1
             ? participants[0].name
             : `${participants
-                .slice(0, -1)
-                .map((p) => p.name)
-                .join(",")}, and ${participants[participants.length - 1].name}`;
+              .slice(0, -1)
+              .map((p) => p.name)
+              .join(",")}, and ${participants[participants.length - 1].name}`;
 
         await Promise.all(
           discord.guilds.cache.map(async (guild) => {
@@ -141,7 +141,7 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
       await updateZoomStatus();
       dispatch(
         userLeft({
-          id: zoomId(event),
+          zoomId: zoomId(event),
           name: event.payload.object.participant.user_name,
         })
       );
