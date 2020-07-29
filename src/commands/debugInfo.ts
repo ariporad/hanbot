@@ -4,12 +4,12 @@ import { hostname } from 'os';
 import { Message } from 'discord.js';
 import { formatMessage, panic, formatUptime } from '../helpers';
 import { getState } from '../store';
-import { getZoomUsers } from "../store/zoom";
+import { getZoomInfo } from "../store/zoom";
 
 
 export async function getDebugInfo(): Promise<string> {
 	await updateZoomStatus();
-	const zoomUsers = getZoomUsers(getState());
+	const zoomInfo = getZoomInfo(getState());
 
 	return [
 		'Hanbot OK\n',
@@ -21,15 +21,15 @@ export async function getDebugInfo(): Promise<string> {
 			['Hostname', hostname()],
 			['Ultimate Answer', '42'],
 			'',
-			['Zoom Active?', zoomUsers.active],
-			['Zoom Seen Start?', zoomUsers.hasSeenStart],
-			zoomUsers.active && [
+			['Zoom Active?', zoomInfo.active],
+			['Zoom Seen Start?', zoomInfo.hasSeenStart],
+			zoomInfo.active && [
 				'Zoom Participants',
-				zoomUsers.online.map(id => zoomUsers.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
+				zoomInfo.online.map(id => zoomInfo.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
 			],
 			[
 				'Known Users',
-				Object.keys(zoomUsers.byId).map(id => zoomUsers.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
+				Object.keys(zoomInfo.byId).map(id => zoomInfo.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
 			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],
 			process.env.TRAVIS_COMMIT && ['\nGit Commit ID', process.env.TRAVIS_COMMIT],

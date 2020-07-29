@@ -3,8 +3,9 @@ import { RootState } from "../store";
 
 interface ZoomState {
   byId: {
-    [id: string]: {
-      id: string;
+    [zoomId: string]: {
+      zoomId: string;
+      discordId: string;
       name: string;
     };
   };
@@ -22,10 +23,11 @@ const initialState: ZoomState = {
   active: false
 };
 
-type UserEventAction = PayloadAction<{ id: string, name: string }>;
+type UserEventAction = PayloadAction<{ zoomId: string, name: string }>;
+type UserLinkAction = PayloadAction<{ zoomId: string, discordId: string }>;
 
 const { reducer, actions, name } = createSlice({
-  name: "zoomUsers",
+  name: "zoomInfo",
   reducers: {
     callStarted: (state) => {
       state.active = true;
@@ -44,8 +46,8 @@ const { reducer, actions, name } = createSlice({
     },
     userLeft: (state, { payload }: UserEventAction) => {
       // always go for the most up to date name
-      if(state.byId.hasOwnProperty(payload.id)) {
-        state.byId[payload.id].name = payload.name;
+      if(state.byId.hasOwnProperty(payload.zoomId)) {
+        state.byId[payload.zoomId].name = payload.name;
       }
         
       if (!state.active) {
@@ -57,42 +59,48 @@ const { reducer, actions, name } = createSlice({
       }
     },
     userJoined: (state, { payload }: PayloadAction<{ temporary: boolean }> & UserEventAction) => {
-      state.byId[payload.id] = payload;
+      state.byId[payload.zoomId] = {
+        ...state.byId[payload.zoomId],
+        ...payload
+      };
       if (payload.temporary) {
-        state.temporary.push(payload.id);
+        state.temporary.push(payload.zoomId);
       }
       if (!state.active) {
 				console.log(
 					'WARNING: Zoom participant joined while meeting was inactive. Ignoring.',
 				);
 			} else {
-        state.online.push(payload.id);
+        state.online.push(payload.zoomId);
       }
+    },
+    userLinked: (state, { payload }: UserLinkAction) => {
+      state.byId[payload.zoomId].discordId = payload.discordId;
     }
   },
   initialState,
 });
 
-const getZoomUsers = (state: RootState): ZoomState => {
+const getZoomInfo = (state: RootState): ZoomState => {
   return state[name];
 }
 
-const getParticipants = createSelector(getZoomUsers, (zoomUsers) => 
-  zoomUsers.online.map(id => zoomUsers.byId[id])
+const getParticipants = createSelector(getZoomInfo, (zoomInfo) => 
+  zoomInfo.online.map(id => zoomInfo.byId[id])
 );
 
-const getCallIsActive = createSelector(getZoomUsers, (zoomUsers) => zoomUsers.active);
+const getCallIsActive = createSelector(getZoomInfo, (zoomInfo) => zoomInfo.active);
 
-const getHasSeenStart = createSelector(getZoomUsers, (zoomUsers) => zoomUsers.hasSeenStart);
+const getHasSeenStart = createSelector(getZoomInfo, (zoomInfo) => zoomInfo.hasSeenStart);
 
 const getUserByName = (zoomName: string) => (state: RootState): string | undefined => {
-  const zoomUsers = getZoomUsers(state);
-  const matching = Object.values(zoomUsers.byId)
+  const zoomInfo = getZoomInfo(state);
+  const matching = Object.values(zoomInfo.byId)
     .find(({ name }) => name.toLowerCase() === zoomName.toLowerCase());
   return matching?.name;
 }
 
-export const { callStarted, callEnded, userLeft, userJoined } = actions;
-export { getZoomUsers, getParticipants, getCallIsActive, getHasSeenStart, getUserByName };
+export const { callStarted, callEnded, userLeft, userJoined, userLinked } = actions;
+export { getZoomInfo, getParticipants, getCallIsActive, getHasSeenStart, getUserByName };
 export { name };
 export default reducer;

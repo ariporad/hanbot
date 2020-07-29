@@ -1,12 +1,10 @@
 import { configureStore, combineReducers, current } from "@reduxjs/toolkit";
 import { readFileSync, writeFile } from "fs";
 import { version as latest, PERSISTED_STATE_FILE } from "../config";
-import zoomUsersReducer, { name as zoomUsersSlice} from "./zoom";
-import linkedAccountsReducer, { name as linkedAccountsSlice } from "./link";
+import zoomInfoReducer, { name as zoomInfoSlice} from "./zoom";
 
 const rootReducer = combineReducers({
-  [zoomUsersSlice]: zoomUsersReducer,
-  [linkedAccountsSlice]: linkedAccountsReducer,
+  [zoomInfoSlice]: zoomInfoReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
