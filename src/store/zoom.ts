@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
+import { RootState } from "../store";
 
 interface ZoomState {
   byId: {
@@ -72,8 +73,6 @@ const { reducer, actions, name } = createSlice({
   initialState,
 });
 
-type RootState = { [name]: ZoomState };
-
 const getZoomUsers = (state: RootState): ZoomState => {
   return state[name];
 }
@@ -86,12 +85,11 @@ const getCallIsActive = createSelector(getZoomUsers, (zoomUsers) => zoomUsers.ac
 
 const getHasSeenStart = createSelector(getZoomUsers, (zoomUsers) => zoomUsers.hasSeenStart);
 
-const getUserByName = (zoomName: string) => (state: RootState): string | null => {
+const getUserByName = (zoomName: string) => (state: RootState): string | undefined => {
   const zoomUsers = getZoomUsers(state);
-  const matching = Object.keys(zoomUsers.byId)
-    .map(id => zoomUsers.byId[id])
-    .filter(({ name }) => name.toLowerCase() === zoomName.toLowerCase());
-  return matching.length === 1 ? matching[0].id : null;
+  const matching = Object.values(zoomUsers.byId)
+    .find(({ name }) => name.toLowerCase() === zoomName.toLowerCase());
+  return matching?.name;
 }
 
 export const { callStarted, callEnded, userLeft, userJoined } = actions;

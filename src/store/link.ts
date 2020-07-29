@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction, createSelector } from "@reduxjs/toolkit";
 import { getParticipants } from "./zoom";
+import { RootState } from "../store";
 
 interface LinkedAccountsState {
   byId: {
@@ -25,8 +26,6 @@ const { reducer, actions, name } = createSlice({
   },
   initialState,
 });
-
-type RootState = { [name]: LinkedAccountsState };
 
 const getLinkedAccounts = (state: RootState): LinkedAccountsState => {
   return state[name];

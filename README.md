@@ -23,6 +23,7 @@ The bot authenticates to Discord as a bot user. Follow [these instructions][crea
 -   `$DISCORD_TOKEN`: The token for your bot user (**not** OAuth tokens).
 -   `$DISCORD_WELCOME_CHANNEL`: The name of the Discord channel to post welcome messages to. Don't set or leave blank to disable the welcome message. For Olin 2024 Mittens, we set this to `general`.
 -   `$DISCORD_ADMITTED_ROLE`: The name of the role to automatically add to every user who joins the server. Don't set or leave blank to prevent giving everyone a role. For Olin 2024 Mittens, we set this to `Admitted`.
+-   `$DISCORD_ACTIVE_ROLE`: The name of the role to add to users who are on Zoom. Don't set or leave blank to disable this feature. For Olin 2024 Mittens, we set this to `Zoomer`.
 
 ### Zoom
 
@@ -34,9 +35,13 @@ Register your JWT app with Zoom following [these instructions][zoom-setup]
 -   `$ZOOM_API_SECRET`: The Zoom JWT API Secret
 -   `$ZOOM_MEETING_ID`: The numerical Zoom meeting ID to monitor with the `!zoom` command. This is the same numerical meeting ID visible in the Zoom app. The Olin 2024 Zoom call is set up as a recurring Zoom call with no set frequency, which is to say that we always use the same call and the ID never changes.
 
+### Other
+
+-   `$PERSISTED_STATE_FILE`: The file to load/save state to. Used for restoring state after a restart or update.
+
 ## Environment Variable Management
 
-[dotenv][dotenv] is used to manage environment variables during development and in production. This involves putting all the environment variables in a file called `.envrc` (see [`.env.example`](.env.example)), which is automagically loaded by your terminal. This file is gitignored for security.
+[dotenv][dotenv] is used to manage environment variables during development and in production. This involves putting all the environment variables in a file called `.env` (see [`.env.example`](.env.example)), which is loaded by the app at runtime. This file is gitignored for security.
 
 ## Building
 
@@ -62,7 +67,7 @@ For development purposes, we use the `@Hanbot Beta#9729` user. It's possible tha
 
 The bot running on Discord as `@Hanbot#9541` is hosted on an VPS [here][hanbot-live]. The bot is owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]> and Elvis Wolcott ([@elviswolcott][]) owns the VPS. Feel free to contact them (or ping them on the Discord) if something's gone wrong or if you have questions.
 
-All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to to the VPS. This usually takes only a few minutes.
+All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to the VPS. This usually takes only a few minutes.
 
 The VPS is running Ubuntu 18 with [pm2][pm2], NodeJS, and NGINX as the reverse proxy.
 

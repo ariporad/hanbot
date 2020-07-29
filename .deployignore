@@ -7,11 +7,10 @@ src
 .gitattributes
 .gitignore
 .travis.yml
-.deploy.sh
 deploy_ssh_key.enc
 deploy_ssh_key.pub
 han.jpg
-han.png
+han-beta.jpg
 mean-girls.jpg
 README.md
 tsconfig.json

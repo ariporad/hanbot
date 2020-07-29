@@ -1,8 +1,6 @@
 #!/bin/bash
 
 # -------- Build Settings -------- #
-# directory to deploy
-BUILD_DIR="./dist"
 # directory on target server
 DEPLOY_DIR="./latest"
 # use to install dependencies without disruption
@@ -32,6 +30,6 @@ rm -rf "${DEPLOY_DIR}"
 mv "${TEMP_DIR}" "${DEPLOY_DIR}"
 rm -rf "${TEMP_DIR}"
 cd "${DEPLOY_DIR}"
-pm2 start "${BUILD_DIR}" --name "${JOB_NAME}"
+pm2 start . --name "${JOB_NAME}"
 pm2 save
 RESTART
