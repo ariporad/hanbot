@@ -11,7 +11,7 @@ export default function link(args: string, message: Discord.Message) {
 		dispatch(userLinked({ discordId: message.author.id, zoomId }));
 		return formatMessage(
 			message.guild || panic(),
-		)`${`@${message.author}`} I'll know who you are when I see ${name} on Zoom.`;
+		)`${`${message.author}`} I'll know who you are when I see ${name} on Zoom.`;
 	} else {
 		return `I've never met anyone called **${name}**. Try joining the Zoom and linking again.`;
 	}
