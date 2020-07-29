@@ -5,7 +5,7 @@ import ping from './ping';
 import help from './help';
 import link from './link';
 import { debugInfo } from './debugInfo';
-import dumpState from "./dumpState";
+import dumpState from './dumpState';
 
 export type CommandHandler = (
 	args: string,
@@ -23,7 +23,7 @@ const COMMANDS: { [command: string]: null | CommandHandler } = {
 	dumpstate: dumpState,
 	welcome,
 	help,
-	link
+	link,
 };
 
 export default COMMANDS;

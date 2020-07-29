@@ -4,8 +4,7 @@ import { hostname } from 'os';
 import { Message } from 'discord.js';
 import { formatMessage, panic, formatUptime } from '../helpers';
 import { getState } from '../store';
-import { getZoomInfo } from "../store/zoom";
-
+import { getZoomInfo } from '../store/zoom';
 
 export async function getDebugInfo(): Promise<string> {
 	await updateZoomStatus();
@@ -26,11 +25,17 @@ export async function getDebugInfo(): Promise<string> {
 			['Zoom Seen Start?', zoomInfo.hasSeenStart],
 			zoomInfo.active && [
 				'Zoom Participants',
-				zoomInfo.online.map(id => zoomInfo.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
+				zoomInfo.online
+					.map((id) => zoomInfo.byId[id])
+					.map(({ name, id }) => `\n\t- ${name} (${id})`)
+					.join(''),
 			],
 			[
 				'Known Users',
-				Object.keys(zoomInfo.byId).map(id => zoomInfo.byId[id]).map(({ name, id }) => `\n\t- ${name} (${id})`).join(''),
+				Object.keys(zoomInfo.byId)
+					.map((id) => zoomInfo.byId[id])
+					.map(({ name, id }) => `\n\t- ${name} (${id})`)
+					.join(''),
 			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],
 			process.env.TRAVIS_COMMIT && ['\nGit Commit ID', process.env.TRAVIS_COMMIT],

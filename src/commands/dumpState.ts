@@ -1,9 +1,9 @@
-import { getState } from "../store"
+import { getState } from '../store';
 
-export default function() {
-  return `
+export default function () {
+	return `
 \`\`\`json
 ${JSON.stringify(getState(), null, 4)}
 \`\`\`
-`
+`;
 }
