@@ -10,9 +10,10 @@ import { sendWelcomeMessage } from "./commands/welcome";
 import createApp from "./webhooks";
 import { createServer } from "http";
 import { syncDiscordStatus } from "./discord";
+import { updateZoomStatus } from "./zoom";
 
 const client = new Discord.Client();
-const app = createApp(client);
+const app = createApp();
 const server = createServer(app);
 
 server.listen(process.env.PORT || 8080, () => {
@@ -20,13 +21,17 @@ server.listen(process.env.PORT || 8080, () => {
   console.log(`Webhook Server listening on http://${address}:${port}`);
 });
 
-client.once("ready", () => {
+client.once("ready", async () => {
   console.log(
     "Connected to Discord! Client ID:",
     client.user?.id,
     "Username:",
     client.user?.username
   );
+
+  await updateZoomStatus();
+  // keep the discord status in sync
+  syncDiscordStatus(client);
 });
 
 client.on("message", async (message) => {
@@ -95,7 +100,4 @@ client.on("guildMemberAdd", (member) => {
   }
 });
 
-client.login(DISCORD_TOKEN).then(() => {
-  // keep the discord status in sync
-  syncDiscordStatus(client);
-});
+client.login(DISCORD_TOKEN);

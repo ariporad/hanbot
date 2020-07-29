@@ -6,7 +6,7 @@ import { formatMessage, panic } from '../helpers';
 
 export default function link(args: string, message: Discord.Message) {
 	const name = args.trim();
-	const zoomId = getUserByName(name)(getState());
+	const zoomId = getUserByName(name)(getState())?.zoomId;
 	if (zoomId !== undefined) {
 		dispatch(userLinked({ discordId: message.author.id, zoomId }));
 		return formatMessage(

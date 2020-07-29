@@ -8,37 +8,23 @@ import {
   ZOOM_TIME_DEBOUNCE_HOURS,
   PRODUCTION,
 } from "./config";
-import { Client, TextChannel } from "discord.js";
-import { formatMessage } from "./helpers";
 import { dispatch, getState } from "./store";
 import {
-  getParticipants,
-  getCallIsActive,
+  getOnlineUsers,
+  getIsActive,
   userLeft,
   userJoined,
   callStarted,
   callEnded,
-  getHasSeenStart,
+  setJoinUrl,
 } from "./store/zoom";
-
-interface ZoomParticipant {
-  id: string;
-  name: string;
-}
-
-export interface ZoomInfo {
-  meetingInfo: any;
-  active: boolean;
-  hasSeenStart: boolean;
-  participants: ZoomParticipant[];
-}
 
 let lastZoomTime: number = -1; // Date.now() format
 
 /**
  * Check the status of the Zoom call.
  */
-export async function updateZoomStatus(): Promise<string> {
+export async function updateZoomStatus(): Promise<void> {
   const meetingInfo = await request.get({
     uri: `https://api.zoom.us/v2/meetings/${ZOOM_MEETING_ID}`,
     auth: {
@@ -52,7 +38,7 @@ export async function updateZoomStatus(): Promise<string> {
   });
 
   const active = meetingInfo.status === "started";
-  const wasActive = getCallIsActive(getState());
+  const wasActive = getIsActive(getState());
   // status change
   if (wasActive !== active) {
     if (active) {
@@ -61,7 +47,7 @@ export async function updateZoomStatus(): Promise<string> {
       dispatch(callEnded());
     }
   }
-  return meetingInfo.join_url;
+  dispatch(setJoinUrl(meetingInfo.join_url));
 }
 
 const zoomId = (
@@ -73,7 +59,7 @@ const zoomId = (
   );
 };
 
-export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
+export async function processWebhookEvent(event: ZoomEvent) {
   console.log(`Processing Zoom Webhook Event: ${event.event}`);
   if (!PRODUCTION) console.log(JSON.stringify(event, null, 2));
 
@@ -85,16 +71,16 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
     return;
   }
 
+  await updateZoomStatus();
+
   switch (event.event) {
     // We don't want to trust Zoom's webhooks for synchronization reasons, so we re-fetch the status
     case "meeting.started":
     case "meeting.ended": {
-      await updateZoomStatus();
       break;
     }
     case "meeting.participant_joined": {
       const participant = event.payload.object.participant;
-      await updateZoomStatus();
       dispatch(
         userJoined({
           zoomId: zoomId(event),
@@ -103,42 +89,19 @@ export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
         })
       );
 
-      const participants = getParticipants(getState());
+      const onlineUsers = getOnlineUsers(getState());
       if (
         ZOOM_TIME_THRESHOLD &&
         ZOOM_TIME_ANNOUNCEMENT_CHANNEL &&
-        participants.length === ZOOM_TIME_THRESHOLD &&
+        onlineUsers.length === ZOOM_TIME_THRESHOLD &&
         Date.now() - lastZoomTime >= ZOOM_TIME_DEBOUNCE_HOURS * 60 * 60 * 10000
       ) {
         lastZoomTime = Date.now();
-        const participantsStr =
-          participants.length === 1
-            ? participants[0].name
-            : `${participants
-              .slice(0, -1)
-              .map((p) => p.name)
-              .join(",")}, and ${participants[participants.length - 1].name}`;
 
-        await Promise.all(
-          discord.guilds.cache.map(async (guild) => {
-            const channel = guild.channels.cache.find(
-              (ch) =>
-                ch.name.toLowerCase() ===
-                ZOOM_TIME_ANNOUNCEMENT_CHANNEL?.toLowerCase()
-            ) as TextChannel | undefined;
-
-            if (!channel) return;
-
-            await channel.send(formatMessage(guild)`
-🚨 Paging everybody, ${participantsStr} are starting a call, it's ${`%Zoom Time`}! 🚨
-						`);
-          })
-        );
       }
       break;
     }
     case "meeting.participant_left": {
-      await updateZoomStatus();
       dispatch(
         userLeft({
           zoomId: zoomId(event),

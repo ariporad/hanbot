@@ -1,28 +1,39 @@
-import { Client, GuildMember } from "discord.js";
-import { subscribeToSelector } from "./store";
+import { Client, GuildMember, TextChannel } from "discord.js";
+import { subscribeToSelector, dispatch } from "./store";
 import { createSelector } from "@reduxjs/toolkit";
 import {
-  getParticipants,
+  getOnlineUsers,
   getHasSeenStart,
-  getCallIsActive,
+  getIsActive,
+  getLastZoomTime,
+  setLastZoomTime,
 } from "./store/zoom";
-import { DISCORD_ACTIVE_ROLE } from "./config";
+import { DISCORD_ACTIVE_ROLE, ZOOM_TIME_THRESHOLD, ZOOM_TIME_ANNOUNCEMENT_CHANNEL, ZOOM_TIME_DEBOUNCE_HOURS } from "./config";
+import { formatMessage } from "./helpers";
 
 const getActiveDiscordUsers = createSelector(
-  getParticipants,
-  (participants) => {
-    return participants.map((user) => user.discordId).filter(Boolean);
+  getOnlineUsers,
+  (onlineUsers) => {
+    return onlineUsers.map((user) => user.discordId).filter(Boolean);
   }
 );
 
 const getZoomInfo = createSelector(
-  getCallIsActive,
+  getIsActive,
   getHasSeenStart,
-  getParticipants,
-  (active, hasSeenStart, participants) => ({
+  getOnlineUsers,
+  (active, hasSeenStart, onlineUsers) => ({
     active,
     hasSeenStart,
-    participants,
+    onlineUsers,
+  })
+);
+
+const getZoomTimeInfo = createSelector(
+  getOnlineUsers,
+  getLastZoomTime,
+  (onlineUsers, lastZoomTime) => ({
+    onlineUsers, lastZoomTime
   })
 );
 
@@ -68,19 +79,51 @@ export const syncDiscordStatus = (discord: Client) => {
       });
     }
 
-    // keep status in sync
+    // fire off zoomtime notifications
+    if (ZOOM_TIME_THRESHOLD &&
+      ZOOM_TIME_ANNOUNCEMENT_CHANNEL) {
+      subscribeToSelector(getZoomTimeInfo, ({ onlineUsers, lastZoomTime }) => {
+        console.log(onlineUsers, lastZoomTime);
+        if (onlineUsers.length === ZOOM_TIME_THRESHOLD && Date.now() - lastZoomTime >= ZOOM_TIME_DEBOUNCE_HOURS * 60 * 60 * 1e4) {
+          const onlineUsersStr =
+            onlineUsers.length === 1
+              ? onlineUsers[0].name
+              : `${onlineUsers
+                .slice(0, -1)
+                .map((p) => p.name)
+                .join(",")}, and ${onlineUsers[onlineUsers.length - 1].name}`;
+
+          dispatch(setLastZoomTime(Date.now()));
+          discord.guilds.cache.map(async (guild) => {
+            const channel = guild.channels.cache.find(
+              (ch) =>
+                ch.name.toLowerCase() ===
+                ZOOM_TIME_ANNOUNCEMENT_CHANNEL?.toLowerCase()
+            ) as TextChannel | undefined;
+
+            if (!channel) return;
+
+            await channel.send(formatMessage(guild)`
+🚨 Paging everybody, ${onlineUsersStr} are starting a call, it's ${`%Zoom Time`}! 🚨
+						`);
+          })
+        }
+      });
+    }
+
+    // keep bot status in sync
     subscribeToSelector(
       getZoomInfo,
-      async ({ active, hasSeenStart, participants }) => {
+      async ({ active, hasSeenStart, onlineUsers }) => {
         if (active) {
           // Curently, the outer ternary is redundant because status is only set when active is true
           const status = active
-            ? hasSeenStart && participants.length >= 0
+            ? hasSeenStart && onlineUsers.length >= 0
               ? `with ${
-                  participants.length === 1
-                    ? `1 person`
-                    : `${participants.length} people`
-                } on Zoom`
+              onlineUsers.length === 1
+                ? `1 person`
+                : `${onlineUsers.length} people`
+              } on Zoom`
               : "on Zoom"
             : "with nobody"; /* currently disabled */
 
