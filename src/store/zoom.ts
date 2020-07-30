@@ -2,6 +2,9 @@ import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
 interface ZoomState {
+	/**
+	 * All of the zoom users seen by the bot, organized by Zoom ID
+	 */
 	byId: {
 		[zoomId: string]: {
 			zoomId: string;
@@ -9,11 +12,30 @@ interface ZoomState {
 			name: string;
 		};
 	};
+	/**
+	 * Zoom IDs of users who are online
+	 */
 	online: string[];
+	/**
+	 * Zoom IDs of temporary (not signed in) users
+	 */
 	temporary: string[];
+	/**
+	 * Has the bot seen the start of the meeting?
+	 * i.e. could there be users who joined before it was listening
+	 */
 	hasSeenStart: boolean;
+	/**
+	 * Is the Zoom meeting active?
+	 */
 	active: boolean;
-	joinUrl: string;
+	/**
+	 * One-click URL to join the meeting
+	 */
+	joinUrl: string | null;
+	/**
+	 * Last time a zoom time ping was send (in ms since epoch)
+	 */
 	lastZoomTime: number;
 }
 
@@ -23,22 +45,23 @@ const initialState: ZoomState = {
 	temporary: [],
 	hasSeenStart: false,
 	active: false,
-	joinUrl: '',
+	joinUrl: null,
 	lastZoomTime: -1,
 };
 
-type UserEventAction = PayloadAction<{ zoomId: string; name: string }>;
+type UserJoinAction = PayloadAction<{ zoomId: string; name: string }>;
+type UserLeaveAction = PayloadAction<{ zoomId: string; name: string; temporary: boolean }>;
 type UserLinkAction = PayloadAction<{ zoomId: string; discordId: string }>;
 
 const { reducer, actions, name } = createSlice({
 	name: 'zoomInfo',
 	reducers: {
-		callStarted: (state) => {
+		callStart: (state) => {
 			state.active = true;
 			state.online = [];
 			state.temporary = [];
 		},
-		callEnded: (state) => {
+		callEnd: (state) => {
 			state.active = false;
 			state.hasSeenStart = true;
 			state.online = [];
@@ -48,7 +71,7 @@ const { reducer, actions, name } = createSlice({
 			});
 			state.temporary = [];
 		},
-		userLeft: (state, { payload }: UserEventAction) => {
+		userLeave: (state, { payload }: UserJoinAction) => {
 			// always go for the most up to date name
 			if (state.byId.hasOwnProperty(payload.zoomId)) {
 				state.byId[payload.zoomId].name = payload.name;
@@ -64,12 +87,7 @@ const { reducer, actions, name } = createSlice({
 				}
 			}
 		},
-		userJoined: (
-			state,
-			{
-				payload: { temporary, ...payload },
-			}: PayloadAction<{ temporary: boolean }> & UserEventAction,
-		) => {
+		userJoin: (state, { payload: { temporary, ...payload } }: UserLeaveAction) => {
 			state.byId[payload.zoomId] = {
 				...state.byId[payload.zoomId],
 				...payload,
@@ -85,7 +103,7 @@ const { reducer, actions, name } = createSlice({
 				state.online.push(payload.zoomId);
 			}
 		},
-		userLinked: (state, { payload }: UserLinkAction) => {
+		linkUser: (state, { payload }: UserLinkAction) => {
 			state.byId[payload.zoomId].discordId = payload.discordId;
 		},
 		setJoinUrl: (state, { payload }: PayloadAction<string>) => {
@@ -130,11 +148,11 @@ const getUserByName = (zoomName: string) =>
 	});
 
 export const {
-	callStarted,
-	callEnded,
-	userLeft,
-	userJoined,
-	userLinked,
+	callStart,
+	callEnd,
+	userLeave,
+	userJoin,
+	linkUser,
 	setJoinUrl,
 	setLastZoomTime,
 } = actions;

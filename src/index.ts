@@ -9,7 +9,7 @@ import COMMANDS, { CommandHandler } from "./commands";
 import { sendWelcomeMessage } from "./commands/welcome";
 import createApp from "./webhooks";
 import { createServer } from "http";
-import { syncDiscordStatus } from "./discord";
+import { registerDiscordStatusSubscriptions } from "./discord";
 import { updateZoomStatus } from "./zoom";
 
 const client = new Discord.Client();
@@ -31,7 +31,7 @@ client.once("ready", async () => {
 
   await updateZoomStatus();
   // keep the discord status in sync
-  syncDiscordStatus(client);
+  registerDiscordStatusSubscriptions(client);
 });
 
 client.on("message", async (message) => {

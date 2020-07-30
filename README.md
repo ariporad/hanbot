@@ -23,7 +23,7 @@ The bot authenticates to Discord as a bot user. Follow [these instructions][crea
 -   `$DISCORD_TOKEN`: The token for your bot user (**not** OAuth tokens).
 -   `$DISCORD_WELCOME_CHANNEL`: The name of the Discord channel to post welcome messages to. Don't set or leave blank to disable the welcome message. For Olin 2024 Mittens, we set this to `general`.
 -   `$DISCORD_ADMITTED_ROLE`: The name of the role to automatically add to every user who joins the server. Don't set or leave blank to prevent giving everyone a role. For Olin 2024 Mittens, we set this to `Admitted`.
--   `$DISCORD_ACTIVE_ROLE`: The name of the role to add to users who are on Zoom. Don't set or leave blank to disable this feature. For Olin 2024 Mittens, we set this to `Zoomer`.
+-   `$DISCORD_ZOOM_ACTIVE_ROLE`: The name of the role to add to users who are on Zoom. Don't set or leave blank to disable this feature. For Olin 2024 Mittens, we set this to `Zoomer`.
 
 ### Zoom
 
@@ -65,11 +65,11 @@ For development purposes, we use the `@Hanbot Beta#9729` user. It's possible tha
 
 ## Hosting
 
-The bot running on Discord as `@Hanbot#9541` is hosted on an VPS [here][hanbot-live]. The bot is owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]> and Elvis Wolcott ([@elviswolcott][]) owns the VPS. Feel free to contact them (or ping them on the Discord) if something's gone wrong or if you have questions.
+The bot running on Discord as `@Hanbot#9541` is hosted on a VPS [here][hanbot-live]. The bot is owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]> and Elvis Wolcott ([@elviswolcott][]) owns the VPS. Feel free to contact them (or ping them on the Discord) if something's gone wrong or if you have questions.
 
 All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to the VPS. This usually takes only a few minutes.
 
-The VPS is running Ubuntu 18 with [pm2][pm2], NodeJS, and NGINX as the reverse proxy.
+The VPS is running Ubuntu 18 with [pm2][], NodeJS, and NGINX as the reverse proxy.
 
 ## Contributing
 
@@ -98,6 +98,7 @@ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 [add-bot-to-server]: https://discordjs.guide/preparations/adding-your-bot-to-servers.html
 [hanbot-live]: https://hanbot.elviswolcott.com/
 [@ariporad]: https://github.com/ariporad
+[@elviswolcott]: https://github.com/elviswolcott
 [ari@ariporad.com]: mailto:ari@ariporad.com?subject=Hanbot
 [travis-ci]: https://travis-ci.com/github/ariporad/hanbot
 [pm2]: https://pm2.keymetrics.io/

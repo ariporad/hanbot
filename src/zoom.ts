@@ -12,14 +12,12 @@ import { dispatch, getState } from "./store";
 import {
   getOnlineUsers,
   getIsActive,
-  userLeft,
-  userJoined,
-  callStarted,
-  callEnded,
+  userLeave,
+  userJoin,
+  callStart,
+  callEnd,
   setJoinUrl,
 } from "./store/zoom";
-
-let lastZoomTime: number = -1; // Date.now() format
 
 /**
  * Check the status of the Zoom call.
@@ -42,17 +40,23 @@ export async function updateZoomStatus(): Promise<void> {
   // status change
   if (wasActive !== active) {
     if (active) {
-      dispatch(callStarted());
+      dispatch(callStart());
     } else {
-      dispatch(callEnded());
+      dispatch(callEnd());
     }
   }
   dispatch(setJoinUrl(meetingInfo.join_url));
 }
 
-const zoomId = (
+const getZoomUserIdFromEvent = (
   event: ZoomParticipantJoinedEvent | ZoomParticipantLeftEvent
 ) => {
+  /**
+   * When the user is signed in, the event includes a stable id
+   * When they are not signed in, the id is ommited
+   * Because the user_id is not stable and can be assigned to different users during different meetings (sessions),
+   * it is neccessary to prefix it with the meeting uuid
+   */
   const participant = event.payload.object.participant;
   return (
     participant.id || `${event.payload.object.uuid}.${participant.user_id}`
@@ -74,7 +78,7 @@ export async function processWebhookEvent(event: ZoomEvent) {
   await updateZoomStatus();
 
   switch (event.event) {
-    // We don't want to trust Zoom's webhooks for synchronization reasons, so we re-fetch the status
+    // We don't want to trust Zoom's webhooks for synchronization reasons, so we re-fetch the status above
     case "meeting.started":
     case "meeting.ended": {
       break;
@@ -82,29 +86,18 @@ export async function processWebhookEvent(event: ZoomEvent) {
     case "meeting.participant_joined": {
       const participant = event.payload.object.participant;
       dispatch(
-        userJoined({
-          zoomId: zoomId(event),
+        userJoin({
+          zoomId: getZoomUserIdFromEvent(event),
           name: participant.user_name,
-          temporary: !Boolean(participant.id),
+          temporary: !participant.id,
         })
       );
-
-      const onlineUsers = getOnlineUsers(getState());
-      if (
-        ZOOM_TIME_THRESHOLD &&
-        ZOOM_TIME_ANNOUNCEMENT_CHANNEL &&
-        onlineUsers.length === ZOOM_TIME_THRESHOLD &&
-        Date.now() - lastZoomTime >= ZOOM_TIME_DEBOUNCE_HOURS * 60 * 60 * 10000
-      ) {
-        lastZoomTime = Date.now();
-
-      }
       break;
     }
     case "meeting.participant_left": {
       dispatch(
-        userLeft({
-          zoomId: zoomId(event),
+        userLeave({
+          zoomId: getZoomUserIdFromEvent(event),
           name: event.payload.object.participant.user_name,
         })
       );

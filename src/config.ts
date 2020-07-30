@@ -45,9 +45,9 @@ export const ZOOM_TIME_DEBOUNCE_HOURS =
   parseInt(process.env.ZOOM_TIME_DEBOUNCE_HOURS || "NaN", 10) || 0;
 export const ZOOM_TIME_ANNOUNCEMENT_CHANNEL = ZOOM_TIME_THRESHOLD
   ? getEnvVar(
-      "ZOOM_TIME_ANNOUNCEMENT_CHANNEL",
-      "Need a Zoom Time Announcement Channel if $ZOOM_TIME_THRESHOLD is set."
-    )
+    "ZOOM_TIME_ANNOUNCEMENT_CHANNEL",
+    "Need a Zoom Time Announcement Channel if $ZOOM_TIME_THRESHOLD is set."
+  )
   : null;
 
 export const DISCORD_TOKEN = getEnvVar(
@@ -59,7 +59,7 @@ export const PERSISTED_STATE_FILE = getEnvVar(
   "Need a Persisted State File!"
 );
 export const DISCORD_ADMITTED_ROLE = process.env.DISCORD_ADMITTED_ROLE || null;
-export const DISCORD_ACTIVE_ROLE = process.env.DISCORD_ACTIVE_ROLE || null;
+export const DISCORD_ZOOM_ACTIVE_ROLE = process.env.DISCORD_ZOOM_ACTIVE_ROLE || null;
 export const DISCORD_WELCOME_CHANNEL =
   process.env.DISCORD_WELCOME_CHANNEL || null;
 
@@ -71,7 +71,7 @@ if (!DISCORD_ADMITTED_ROLE) {
   );
 }
 
-if (!DISCORD_ACTIVE_ROLE) {
+if (!DISCORD_ZOOM_ACTIVE_ROLE) {
   console.warn(
     "WARNING: $DISCORD_ADMITTED_ROLE is not set. No role will be added to users on Zoom."
   );

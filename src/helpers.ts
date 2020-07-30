@@ -1,7 +1,6 @@
 import Discord, {
   TextBasedChannelFields,
   PartialTextBasedChannelFields,
-  Collection,
 } from "discord.js";
 
 /**

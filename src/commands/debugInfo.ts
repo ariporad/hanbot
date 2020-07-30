@@ -27,7 +27,7 @@ export async function getDebugInfo(): Promise<string> {
 			['Zoom Active?', active],
 			['Zoom Seen Start?', hasSeenStart],
 			active && [
-				'Zoom Participants',
+				'Zoom Online Users',
 				onlineUsers
 					.map(
 						({ name, zoomId, discordId }) =>

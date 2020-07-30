@@ -8,17 +8,17 @@ import {
   getLastZoomTime,
   setLastZoomTime,
 } from "./store/zoom";
-import { DISCORD_ACTIVE_ROLE, ZOOM_TIME_THRESHOLD, ZOOM_TIME_ANNOUNCEMENT_CHANNEL, ZOOM_TIME_DEBOUNCE_HOURS } from "./config";
+import { DISCORD_ZOOM_ACTIVE_ROLE, ZOOM_TIME_THRESHOLD, ZOOM_TIME_ANNOUNCEMENT_CHANNEL, ZOOM_TIME_DEBOUNCE_HOURS } from "./config";
 import { formatMessage } from "./helpers";
 
 const getActiveDiscordUsers = createSelector(
   getOnlineUsers,
   (onlineUsers) => {
-    return onlineUsers.map((user) => user.discordId).filter(Boolean);
+    return onlineUsers.map((user) => user.discordId).filter(x => !!x);
   }
 );
 
-const getZoomInfo = createSelector(
+const getZoomStatusInfo = createSelector(
   getIsActive,
   getHasSeenStart,
   getOnlineUsers,
@@ -38,7 +38,7 @@ const getZoomTimeInfo = createSelector(
 );
 
 // keeps discord in sync with the server side state
-export const syncDiscordStatus = (discord: Client) => {
+export const registerDiscordStatusSubscriptions = (discord: Client) => {
   // get the active role on each server
   discord.guilds.cache.forEach(async (guild) => {
     console.log(`Syncing to ${guild.name}`);
@@ -46,7 +46,7 @@ export const syncDiscordStatus = (discord: Client) => {
     const roles = await guild.roles.fetch();
     // role to apply/remove
     const activeRole = roles.cache.find(
-      (role) => role.name === DISCORD_ACTIVE_ROLE
+      (role) => role.name === DISCORD_ZOOM_ACTIVE_ROLE
     );
     if (activeRole) {
       // keep roles in sync
@@ -58,9 +58,7 @@ export const syncDiscordStatus = (discord: Client) => {
         const shouldUpdateMember = (member: GuildMember): boolean => {
           return (
             activeUsers.indexOf(member.id) > -1 ||
-            Boolean(
-              member.roles.cache.find((role) => role.id === activeRole.id)
-            )
+            !!member.roles.cache.find((role) => role.id === activeRole.id)
           );
         };
         guild.members.cache
@@ -83,8 +81,7 @@ export const syncDiscordStatus = (discord: Client) => {
     if (ZOOM_TIME_THRESHOLD &&
       ZOOM_TIME_ANNOUNCEMENT_CHANNEL) {
       subscribeToSelector(getZoomTimeInfo, ({ onlineUsers, lastZoomTime }) => {
-        console.log(onlineUsers, lastZoomTime);
-        if (onlineUsers.length === ZOOM_TIME_THRESHOLD && Date.now() - lastZoomTime >= ZOOM_TIME_DEBOUNCE_HOURS * 60 * 60 * 1e4) {
+        if (onlineUsers.length === ZOOM_TIME_THRESHOLD && Date.now() - lastZoomTime >= ZOOM_TIME_DEBOUNCE_HOURS * 60 * 60 * 1000) {
           const onlineUsersStr =
             onlineUsers.length === 1
               ? onlineUsers[0].name
@@ -113,7 +110,7 @@ export const syncDiscordStatus = (discord: Client) => {
 
     // keep bot status in sync
     subscribeToSelector(
-      getZoomInfo,
+      getZoomStatusInfo,
       async ({ active, hasSeenStart, onlineUsers }) => {
         if (active) {
           // Curently, the outer ternary is redundant because status is only set when active is true

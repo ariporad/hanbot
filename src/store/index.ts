@@ -16,6 +16,7 @@ const loadState = (): RootState | undefined => {
 		const { state, version } = JSON.parse(readFileSync(PERSISTED_STATE_FILE, 'utf-8'));
 		return state;
 	} catch (e) {
+		console.error('Error: unable to load persisted state', e);
 		return undefined;
 	}
 };
