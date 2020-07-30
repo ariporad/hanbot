@@ -4,11 +4,14 @@ import { hostname } from 'os';
 import { Message } from 'discord.js';
 import { formatMessage, panic, formatUptime } from '../helpers';
 import { getState } from '../store';
-import { getZoomInfo } from '../store/zoom';
+import { getZoomInfo, getIsActive, getHasSeenStart, getOnlineUsers } from '../store/zoom';
 
 export async function getDebugInfo(): Promise<string> {
 	await updateZoomStatus();
-	const zoomInfo = getZoomInfo(getState());
+	const state = getState();
+	const active = getIsActive(state);
+	const hasSeenStart = getHasSeenStart(state);
+	const onlineUsers = getOnlineUsers(state);
 
 	return [
 		'Hanbot OK\n',
@@ -21,20 +24,12 @@ export async function getDebugInfo(): Promise<string> {
 			['Ultimate Answer', '42'],
 			'',
 			['Zoom Meeting ID', ZOOM_MEETING_ID],
-			['Zoom Active?', zoomInfo.active],
-			['Zoom Seen Start?', zoomInfo.hasSeenStart],
-			zoomInfo.active && [
+			['Zoom Active?', active],
+			['Zoom Seen Start?', hasSeenStart],
+			active && [
 				'Zoom Participants',
-				zoomInfo.online
-					.map((id) => zoomInfo.byId[id])
-					.map(({ name, zoomId }) => `\n\t- ${name} (${zoomId})`)
-					.join(''),
-			],
-			[
-				'Known Users',
-				Object.keys(zoomInfo.byId)
-					.map((id) => zoomInfo.byId[id])
-					.map(({ name, zoomId }) => `\n\t- ${name} (${zoomId})`)
+				onlineUsers
+					.map(({ name, zoomId, discordId }) => `\n\t- ${name} (${zoomId}) ${discordId ? `[${discordId}]` : ''}`)
 					.join(''),
 			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],
