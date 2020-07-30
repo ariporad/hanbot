@@ -68,13 +68,13 @@ const { reducer, actions, name } = createSlice({
     },
     userJoined: (
       state,
-      { payload }: PayloadAction<{ temporary: boolean }> & UserEventAction,
+      { payload: { temporary, ...payload } }: PayloadAction<{ temporary: boolean }> & UserEventAction,
     ) => {
       state.byId[payload.zoomId] = {
         ...state.byId[payload.zoomId],
         ...payload,
       };
-      if (payload.temporary) {
+      if (temporary) {
         state.temporary.push(payload.zoomId);
       }
       if (!state.active) {
