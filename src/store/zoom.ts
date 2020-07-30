@@ -1,11 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../store';
-import { zoomInfo } from '../commands/zoom';
-import {
-  ZOOM_TIME_THRESHOLD,
-  ZOOM_TIME_ANNOUNCEMENT_CHANNEL,
-  ZOOM_TIME_DEBOUNCE_HOURS,
-} from '../config';
 
 interface ZoomState {
   byId: {
@@ -64,6 +58,10 @@ const { reducer, actions, name } = createSlice({
         console.log('WARNING: Zoom participant left while meeting was inactive. Ignoring.');
       } else {
         state.online = state.online.filter((zoomId) => zoomId !== payload.zoomId);
+        if (state.temporary.indexOf(payload.zoomId) > -1) {
+          state.temporary = state.temporary.filter((zoomId) => zoomId !== payload.zoomId);
+          delete state.byId[payload.zoomId];
+        }
       }
     },
     userJoined: (
