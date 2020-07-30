@@ -48,7 +48,6 @@ const subscribeToSelector = <RT>(
 	isEqual: (a: RT, b: RT) => boolean = (a, b) => a === b,
 ) => {
 	let previousValue = selector(store.getState());
-	callback(previousValue);
 	store.subscribe(() => {
 		const currentValue = selector(store.getState());
 		// check if value has changed
@@ -57,6 +56,7 @@ const subscribeToSelector = <RT>(
 			callback(currentValue);
 		}
 	});
+	callback(previousValue);
 };
 
 export default store;
