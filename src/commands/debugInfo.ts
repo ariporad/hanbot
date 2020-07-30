@@ -29,7 +29,10 @@ export async function getDebugInfo(): Promise<string> {
 			active && [
 				'Zoom Participants',
 				onlineUsers
-					.map(({ name, zoomId, discordId }) => `\n\t- ${name} (${zoomId}) ${discordId ? `[${discordId}]` : ''}`)
+					.map(
+						({ name, zoomId, discordId }) =>
+							`\n\t- ${name} (${zoomId}) ${discordId ? `[${discordId}]` : ''}`,
+					)
 					.join(''),
 			],
 			process.env.HEROKU_SLUG_COMMIT && ['\nGit Commit ID', process.env.HEROKU_SLUG_COMMIT],

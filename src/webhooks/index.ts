@@ -12,7 +12,7 @@ export default function createApp() {
 	app.get('*', async (req, res) => {
 		try {
 			res.status(200);
-			res.write(await getDebugInfo() + "\n\n" + JSON.stringify(getState(), null, 2));
+			res.write((await getDebugInfo()) + '\n\n' + JSON.stringify(getState(), null, 2));
 			res.end();
 		} catch (err) {
 			console.error(`ERROR(app.get(*))!`);

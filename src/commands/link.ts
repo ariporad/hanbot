@@ -10,7 +10,9 @@ export default function link(args: string, message: Discord.Message) {
 	const user = getUserByName(name)(state);
 	if (user) {
 		if (user.temporary) {
-			return formatMessage(message.guild || panic())`${message.author} You joined the zoom without signing in. Sign in and rejoin to link your accounts.`
+			return formatMessage(
+				message.guild || panic(),
+			)`${message.author} You joined the zoom without signing in. Sign in and rejoin to link your accounts.`;
 		}
 		dispatch(userLinked({ discordId: message.author.id, zoomId: user.zoomId }));
 		return formatMessage(
