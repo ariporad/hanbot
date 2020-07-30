@@ -5,7 +5,6 @@ import ping from './ping';
 import help from './help';
 import link from './link';
 import { debugInfo } from './debugInfo';
-import dumpState from './dumpState';
 
 export type CommandHandler = (
 	args: string,
@@ -20,7 +19,6 @@ const COMMANDS: { [command: string]: null | CommandHandler } = {
 	zoom: zoomStatus,
 	zoominfo: zoomInfo,
 	debuginfo: debugInfo,
-	dumpstate: dumpState,
 	welcome,
 	help,
 	link,

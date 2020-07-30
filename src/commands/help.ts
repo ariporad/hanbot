@@ -16,21 +16,20 @@ Commands:
 - \`!help\`: Show this message.
 - \`!welcome\`: Demonstrate the welcome message sent to new users.
 - \`!debuginfo\`: Dump lots of information that might be helpful for debugging.
-- \`!dumpstate\`: Dump the all the state tracked by the server.
 
 I was built by ${'@Ari (Han X)'} in the service of our glorious leader, Han. Ping ${'%Bot Builder'} if I'm acting up or if you need help. My code is available on Github, and PRs are welcome if you'd like to add functionality: https://github.com/ariporad/hanbot.
 
 ${
-	// This is pretty ugly.
-	PRODUCTION
-		? ''
-		: `_This copy of me is currently being tinkered with by my glorious creators so I can better aid in the spreading of the Gospel of Han. As a result, I may not work quite right.${
-				message.client.user?.username === 'Hanbot'
-					? ''
-					: ` Try ${formatMessage(
-							message.guild || panic(),
-					  )`${'@Hanbot'}`} for the real deal.`
-		  }_`
-}
+		// This is pretty ugly.
+		PRODUCTION
+			? ''
+			: `_This copy of me is currently being tinkered with by my glorious creators so I can better aid in the spreading of the Gospel of Han. As a result, I may not work quite right.${
+			message.client.user?.username === 'Hanbot'
+				? ''
+				: ` Try ${formatMessage(
+					message.guild || panic(),
+				)`${'@Hanbot'}`} for the real deal.`
+			}_`
+		}
 	`;
 }
