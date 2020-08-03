@@ -12,7 +12,7 @@ export default function link(args: string, message: Discord.Message) {
 		if (user.temporary) {
 			return formatMessage(message.guild || panic())`
 ${message.author} You joined the zoom without signing in. Sign in to Zoom and rejoin, then link your accounts.
-https://olin.zoom.us
+Sign in to your Olin Zoom account here: https://olin.zoom.us
 `;
 		}
 		dispatch(linkUser({ discordId: message.author.id, zoomId: user.zoomId }));

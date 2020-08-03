@@ -34,7 +34,7 @@ interface ZoomState {
 	 */
 	joinUrl: string | null;
 	/**
-	 * Last time a zoom time ping was send (in ms since epoch)
+	 * Last time a zoom time ping was sent (in ms since epoch)
 	 */
 	lastZoomTime: number;
 }
@@ -49,8 +49,8 @@ const initialState: ZoomState = {
 	lastZoomTime: -1,
 };
 
-type UserJoinAction = PayloadAction<{ zoomId: string; name: string }>;
-type UserLeaveAction = PayloadAction<{ zoomId: string; name: string; temporary: boolean }>;
+type UserLeaveAction = PayloadAction<{ zoomId: string; name: string }>;
+type UserJoinAction = PayloadAction<{ zoomId: string; name: string; temporary: boolean }>;
 type UserLinkAction = PayloadAction<{ zoomId: string; discordId: string }>;
 
 const { reducer, actions, name } = createSlice({
@@ -71,7 +71,7 @@ const { reducer, actions, name } = createSlice({
 			});
 			state.temporary = [];
 		},
-		userLeave: (state, { payload }: UserJoinAction) => {
+		userLeave: (state, { payload }: UserLeaveAction) => {
 			// always go for the most up to date name
 			if (state.byId.hasOwnProperty(payload.zoomId)) {
 				state.byId[payload.zoomId].name = payload.name;
@@ -87,7 +87,7 @@ const { reducer, actions, name } = createSlice({
 				}
 			}
 		},
-		userJoin: (state, { payload: { temporary, ...payload } }: UserLeaveAction) => {
+		userJoin: (state, { payload: { temporary, ...payload } }: UserJoinAction) => {
 			state.byId[payload.zoomId] = {
 				...state.byId[payload.zoomId],
 				...payload,

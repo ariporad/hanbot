@@ -11,7 +11,7 @@ import {
 import { DISCORD_ZOOM_ACTIVE_ROLE, ZOOM_TIME_THRESHOLD, ZOOM_TIME_ANNOUNCEMENT_CHANNEL, ZOOM_TIME_DEBOUNCE_HOURS } from "./config";
 import { formatMessage } from "./helpers";
 
-const getActiveDiscordUsers = createSelector(
+const getOnlineDiscordUsers = createSelector(
   getOnlineUsers,
   (onlineUsers) => {
     return onlineUsers.map((user) => user.discordId).filter(x => !!x);
@@ -50,7 +50,7 @@ export const registerDiscordStatusSubscriptions = (discord: Client) => {
     );
     if (activeRole) {
       // keep roles in sync
-      subscribeToSelector(getActiveDiscordUsers, async (activeUsers) => {
+      subscribeToSelector(getOnlineDiscordUsers, async (activeUsers) => {
         // ensure members are up to date
         await guild.members.fetch();
         // update roles

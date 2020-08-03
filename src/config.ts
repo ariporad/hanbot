@@ -73,7 +73,7 @@ if (!DISCORD_ADMITTED_ROLE) {
 
 if (!DISCORD_ZOOM_ACTIVE_ROLE) {
   console.warn(
-    "WARNING: $DISCORD_ADMITTED_ROLE is not set. No role will be added to users on Zoom."
+    "WARNING: $DISCORD_ZOOM_ACTIVE_ROLE is not set. No role will be added to users on Zoom."
   );
 }
 

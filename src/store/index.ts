@@ -1,5 +1,6 @@
-import { configureStore, combineReducers, current } from '@reduxjs/toolkit';
-import { readFileSync, writeFile } from 'fs';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { readFileSync } from 'fs';
+import { writeFile } from 'fs/promises';
 import { version as latest, PERSISTED_STATE_FILE } from '../config';
 import zoomInfoReducer, { name as zoomInfoSlice } from './zoom';
 
@@ -36,7 +37,6 @@ store.subscribe(() => {
 			state,
 			version: latest,
 		}),
-		() => {},
 	);
 });
 
