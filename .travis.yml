@@ -1,16 +1,18 @@
 language: node_js
 node_js:
-- 12
+    - 12
 script:
-- yarn travis
+    - yarn travis
 deploy:
-  provider: heroku
-  api_key:
-    secure: gasxg1Kpt40gsSD8TM1gc6lQbbNESI7APvIVoH2fZWQZs284k89JNuls+x2E5+SyH0Wss13qWndAMBgCRGmoUNLM5J9uvX4JWHibzAqOLRPnMmE+kjgF9fiWfeFN+5jAT8GKMLXJD/U8ZuEhT2u+Dit2jzeFuI3WJqN7cXOuTtm81ZVUxvTP05GUJjATFSDflvbJFhoePHoRadat0Z+LuNcjb1KELH83EhNWnk70dnp+3i/oqVYSrh0IUcuZ+MRe4SWuI+pFYhVdGxUfQ4WBWtJo/kA9N+3Fn8uQZiCF74NQbkKiJ8MWwA4drFMLcBhOdE4Ag1MpQrM32RJ4HUI35lIrV3evNqx8D863sUaTNHaCcJmYXZq1oBFSlWazFEL0pLQRrjsQkdN/LMlT+CXvrPdpEt/iWFWGXOG20igm5vaxRYK+jhuyR2J9G6NB4n78QfZq6Vt4mClO+ZrrSK8m6dYBEaqnBPHqkoPXzKEKIFS3f3btsA69pIPrNryKz5BxXpO02WrALfOr60Z3K/VgCdO+x4oMQ+vxEu9AHJlpOGjXBuMFpwgBy5QN116vFzpJQQYxHnmwEofXzrg8oM/1V/BLbnBMBeQsydlmIg/3m0ouoTYg1lPvh30WdVDLXCiEZHAVCTSjnG3qfln5M3rpUoKSws1J+ICDqME/1UKHNPI=
-  app: olin-2024-hanbot
-  on:
-    repo: ariporad/hanbot
-  skip_cleanup: 'true'
+    provider: heroku
+    api_key:
+        secure: gasxg1Kpt40gsSD8TM1gc6lQbbNESI7APvIVoH2fZWQZs284k89JNuls+x2E5+SyH0Wss13qWndAMBgCRGmoUNLM5J9uvX4JWHibzAqOLRPnMmE+kjgF9fiWfeFN+5jAT8GKMLXJD/U8ZuEhT2u+Dit2jzeFuI3WJqN7cXOuTtm81ZVUxvTP05GUJjATFSDflvbJFhoePHoRadat0Z+LuNcjb1KELH83EhNWnk70dnp+3i/oqVYSrh0IUcuZ+MRe4SWuI+pFYhVdGxUfQ4WBWtJo/kA9N+3Fn8uQZiCF74NQbkKiJ8MWwA4drFMLcBhOdE4Ag1MpQrM32RJ4HUI35lIrV3evNqx8D863sUaTNHaCcJmYXZq1oBFSlWazFEL0pLQRrjsQkdN/LMlT+CXvrPdpEt/iWFWGXOG20igm5vaxRYK+jhuyR2J9G6NB4n78QfZq6Vt4mClO+ZrrSK8m6dYBEaqnBPHqkoPXzKEKIFS3f3btsA69pIPrNryKz5BxXpO02WrALfOr60Z3K/VgCdO+x4oMQ+vxEu9AHJlpOGjXBuMFpwgBy5QN116vFzpJQQYxHnmwEofXzrg8oM/1V/BLbnBMBeQsydlmIg/3m0ouoTYg1lPvh30WdVDLXCiEZHAVCTSjnG3qfln5M3rpUoKSws1J+ICDqME/1UKHNPI=
+    app: olin-2024-hanbot
+    on:
+        repo: ariporad/hanbot
+    skip_cleanup: 'true'
 before_install:
-- openssl aes-256-cbc -K $encrypted_9b645a4101e5_key -iv $encrypted_9b645a4101e5_iv
-  -in deploy_ssh_key.enc -out deploy_ssh_key -d
+    - openssl aes-256-cbc -K $encrypted_a891a61b14d5_key -iv $encrypted_a891a61b14d5_iv
+      -in production.env.enc -out .env -d
+    - openssl aes-256-cbc -K $encrypted_9b645a4101e5_key -iv $encrypted_9b645a4101e5_iv
+      -in deploy_ssh_key.enc -out deploy_ssh_key -d
