@@ -16,7 +16,7 @@
 		"predev": "yarn clean && yarn build",
 		"dev": "concurrently -c bgBlue,bgGreen.black -k -n tsc,bot \"tsc --watch\" \"nodemon -w dist dist/index.js\"",
 		"travis": "yarn clean && yarn build",
-		"lint": "prettier --write src/**/*.ts"
+		"lint": "prettier --write src/*.ts src/**/*.ts"
 	},
 	"devDependencies": {
 		"@types/express": "^4.17.6",
