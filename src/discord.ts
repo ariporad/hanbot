@@ -78,8 +78,9 @@ export const registerDiscordStatusSubscriptions = (discord: Client) => {
 
 		// fire off zoomtime notifications
 		if (ZOOM_TIME_THRESHOLD && ZOOM_TIME_ANNOUNCEMENT_CHANNEL) {
-			subscribeToSelector(getZoomTimeInfo, ({ onlineUsers, lastZoomTime }) => {
+			subscribeToSelector(getZoomTimeInfo, ({ onlineUsers, lastZoomTime }, { onlineUsers: prevOnlineUsers }) => {
 				if (
+					prevOnlineUsers.length < onlineUsers.length &&
 					onlineUsers.length === ZOOM_TIME_THRESHOLD &&
 					Date.now() - lastZoomTime >= ZOOM_TIME_DEBOUNCE_HOURS * 60 * 60 * 1000
 				) {
@@ -87,9 +88,9 @@ export const registerDiscordStatusSubscriptions = (discord: Client) => {
 						onlineUsers.length === 1
 							? onlineUsers[0].name
 							: `${onlineUsers
-									.slice(0, -1)
-									.map((p) => p.name)
-									.join(',')}, and ${onlineUsers[onlineUsers.length - 1].name}`;
+								.slice(0, -1)
+								.map((p) => p.name)
+								.join(',')}, and ${onlineUsers[onlineUsers.length - 1].name}`;
 
 					dispatch(setLastZoomTime(Date.now()));
 					discord.guilds.cache.map(async (guild) => {
@@ -116,10 +117,10 @@ export const registerDiscordStatusSubscriptions = (discord: Client) => {
 				const status = active
 					? hasSeenStart && onlineUsers.length >= 0
 						? `with ${
-								onlineUsers.length === 1
-									? `1 person`
-									: `${onlineUsers.length} people`
-						  } on Zoom`
+						onlineUsers.length === 1
+							? `1 person`
+							: `${onlineUsers.length} people`
+						} on Zoom`
 						: 'on Zoom'
 					: 'with nobody'; /* currently disabled */
 

@@ -44,7 +44,7 @@ store.subscribe(() => {
 // for the sake of simplicity you have to create a single compound selector (instead of accepting a selector list)
 const subscribeToSelector = <RT>(
 	selector: (state: RootState) => RT,
-	callback: (state: RT) => void,
+	callback: (state: RT, oldState: RT) => void,
 	isEqual: (a: RT, b: RT) => boolean = (a, b) => a === b,
 ) => {
 	let previousValue = selector(store.getState());
@@ -52,11 +52,11 @@ const subscribeToSelector = <RT>(
 		const currentValue = selector(store.getState());
 		// check if value has changed
 		if (!isEqual(currentValue, previousValue)) {
+			callback(currentValue, previousValue);
 			previousValue = currentValue;
-			callback(currentValue);
 		}
 	});
-	callback(previousValue);
+	callback(previousValue, previousValue);
 };
 
 export default store;
