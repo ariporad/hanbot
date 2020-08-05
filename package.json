@@ -8,14 +8,14 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"prestart": "yarn build",
+		"prestart": "npm run build",
 		"start": "node ./dist/index.js",
 		"build": "tsc",
 		"watch": "tsc --watch",
 		"clean": "rm -rf dist",
-		"predev": "yarn clean && yarn build",
+		"predev": "npm run clean && npm run build",
 		"dev": "concurrently -c bgBlue,bgGreen.black -k -n tsc,bot \"tsc --watch\" \"nodemon -w dist dist/index.js\"",
-		"travis": "yarn clean && yarn build",
+		"travis": "npm run clean && npm run build",
 		"lint": "prettier --write src/*.ts src/**/*.ts"
 	},
 	"devDependencies": {

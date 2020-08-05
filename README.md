@@ -8,9 +8,9 @@ Hanbot is written in Typescript using [Discord.js][].
 
 ## Installation
 
-First, you'll need Node.js and yarn installed. I used node `12.13.1`.
+First, you'll need Node.js and NPM installed. I used node `12.13.1`.
 
-Then, clone the repo and run `yarn` to install the dependencies.
+Then, clone the repo and run `npm install` to install the dependencies.
 
 ## Environment Variables
 
@@ -45,19 +45,19 @@ Register your JWT app with Zoom following [these instructions][zoom-setup]
 
 ## Building
 
-The project is compiled exclusively with `tsc`, which compiles every `.ts` file in `src/**/*` to a corresponding file in `dist/`. Just run `tsc` to compile the entire project (or run `yarn build`, which does the same thing).
+The project is compiled exclusively with `tsc`, which compiles every `.ts` file in `src/**/*` to a corresponding file in `dist/`. Just run `tsc` to compile the entire project (or run `npm run build`, which does the same thing).
 
-To clean the project, simply delete the `dist/` folder and everything in it (or run `yarn clean`).
+To clean the project, simply delete the `dist/` folder and everything in it (or run `npm run clean`).
 
-To have the compiler watch for and re-compile any changes, run `tsc --watch` or `yarn watch`.
+To have the compiler watch for and re-compile any changes, run `tsc --watch` or `npm run watch`.
 
 ## Running
 
-To run the bot, build as described above then run `node ./dist/index.js` or `yarn start` (which will build for you).
+To run the bot, build as described above then run `node ./dist/index.js` or `npm run start` (which will build for you).
 
 You can also run and debug from within VS Code, which will work properly with the VS Code debugger use the `Run` task (not the `Watch` task, which is buggy).
 
-In development, you can run `yarn dev`, which will clean the project, build, and run the bot. It will also watch changes, and subsequently recompile the project and reboot the bot.
+In development, you can run `npm run dev`, which will clean the project, build, and run the bot. It will also watch changes, and subsequently recompile the project and reboot the bot.
 
 For development purposes, we use the `@Hanbot Beta#9729` user. It's possible that multiple instances may be running at the same time.
 
@@ -77,7 +77,7 @@ Please feel free to contribute to Hanbot! This bot belongs to all of us, and I'd
 
 If you need help, feel free to reach out to me on Discord (I'm `Ari (Han X)`).
 
-If you do contribute code, please make sure that your code works, and run `yarn lint` to ensure it's formatted properly (using [prettier][]). Ping me on the Discord and I'll set you up with the relevant credentials and tokens for testing your changes.
+If you do contribute code, please make sure that your code works, and run `npm run lint` to ensure it's formatted properly (using [prettier][]). Ping me on the Discord and I'll set you up with the relevant credentials and tokens for testing your changes.
 
 ## License
 

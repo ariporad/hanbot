@@ -2,7 +2,7 @@ language: node_js
 node_js:
     - 12
 script:
-- yarn travis
+- npm run travis
 addons:
   ssh_known_hosts: hanbot.elviswolcott.com
 before_deploy:
