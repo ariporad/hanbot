@@ -1,6 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { readFileSync } from 'fs';
-import { writeFile } from 'fs/promises';
+import { readFileSync, promises as fs } from 'fs';
 import { version as latest, PERSISTED_STATE_FILE } from '../config';
 import zoomInfoReducer, { name as zoomInfoSlice } from './zoom';
 
@@ -29,9 +28,9 @@ const store = configureStore({
 });
 
 // all changes are persisted to disk
-store.subscribe(() => {
+store.subscribe(async () => {
 	const state = store.getState();
-	writeFile(
+	await fs.writeFile(
 		PERSISTED_STATE_FILE,
 		JSON.stringify({
 			state,
