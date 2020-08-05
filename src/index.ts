@@ -1,13 +1,19 @@
 import Discord, { TextChannel } from 'discord.js';
-import { DISCORD_ADMITTED_ROLE, DISCORD_WELCOME_CHANNEL, DISCORD_TOKEN } from './config';
+import {
+	DISCORD_ADMITTED_ROLE,
+	DISCORD_WELCOME_CHANNEL,
+	DISCORD_TOKEN,
+	PRODUCTION,
+} from './config';
 import COMMANDS, { CommandHandler } from './commands';
 import { sendWelcomeMessage } from './commands/welcome';
 import createApp from './webhooks';
 import { createServer } from 'http';
-import { updateDiscordStatusFromZoom } from './zoom';
+import { registerDiscordStatusSubscriptions } from './discord';
+import { updateZoomStatus } from './zoom';
 
 const client = new Discord.Client();
-const app = createApp(client);
+const app = createApp();
 const server = createServer(app);
 
 server.listen(process.env.PORT || 8080, () => {
@@ -15,19 +21,22 @@ server.listen(process.env.PORT || 8080, () => {
 	console.log(`Webhook Server listening on http://${address}:${port}`);
 });
 
-client.once('ready', () => {
+client.once('ready', async () => {
 	console.log(
 		'Connected to Discord! Client ID:',
 		client.user?.id,
 		'Username:',
 		client.user?.username,
 	);
-	updateDiscordStatusFromZoom(client);
+
+	await updateZoomStatus();
+	// keep the discord status in sync
+	registerDiscordStatusSubscriptions(client);
 });
 
 client.on('message', async (message) => {
 	try {
-		if (process.env.NODE_ENV === 'development') console.log('Got Message:', message.content);
+		if (!PRODUCTION) console.log('Got Message:', message.content);
 		if (!(message.channel instanceof TextChannel)) return;
 
 		for (const [, command, args] of message.content.matchAll(

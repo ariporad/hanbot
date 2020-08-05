@@ -6,30 +6,23 @@ import {
 	ZOOM_TIME_THRESHOLD,
 	ZOOM_TIME_ANNOUNCEMENT_CHANNEL,
 	ZOOM_TIME_DEBOUNCE_HOURS,
+	PRODUCTION,
 } from './config';
-import { Client, TextChannel } from 'discord.js';
-import { formatMessage } from './helpers';
-
-export interface ZoomInfo {
-	meetingInfo: any;
-	active: boolean;
-	hasSeenStart: boolean;
-	participants: ZoomParticipant[];
-}
-
-interface ZoomParticipant {
-	id: string;
-	name: string;
-}
-
-let hasSeenStart: boolean = false;
-let participants: ZoomParticipant[] = [];
-let lastZoomTime: number = -1; // Date.now() format
+import { dispatch, getState } from './store';
+import {
+	getOnlineUsers,
+	getIsActive,
+	userLeave,
+	userJoin,
+	callStart,
+	callEnd,
+	setJoinUrl,
+} from './store/zoom';
 
 /**
  * Check the status of the Zoom call.
  */
-export async function getZoomInfo(): Promise<ZoomInfo> {
+export async function updateZoomStatus(): Promise<void> {
 	const meetingInfo = await request.get({
 		uri: `https://api.zoom.us/v2/meetings/${ZOOM_MEETING_ID}`,
 		auth: {
@@ -43,124 +36,73 @@ export async function getZoomInfo(): Promise<ZoomInfo> {
 	});
 
 	const active = meetingInfo.status === 'started';
-
-	if (!active) {
-		hasSeenStart = true;
-		participants = [];
+	const wasActive = getIsActive(getState());
+	// status change
+	if (wasActive !== active) {
+		if (active) {
+			dispatch(callStart());
+		} else {
+			dispatch(callEnd());
+		}
 	}
-
-	if (!hasSeenStart) participants = [];
-
-	return { meetingInfo, active, hasSeenStart, participants };
+	dispatch(setJoinUrl(meetingInfo.join_url));
 }
 
-export async function updateDiscordStatusFromZoom(discord: Client, zoomInfo?: ZoomInfo) {
-	if (!zoomInfo) zoomInfo = await getZoomInfo();
+const getZoomUserIdFromEvent = (event: ZoomParticipantJoinedEvent | ZoomParticipantLeftEvent) => {
+	/**
+	 * When the user is signed in, the event includes a stable id
+	 * When they are not signed in, the id is ommited
+	 * Because the user_id is not stable and can be assigned to different users during different meetings (sessions),
+	 * it is neccessary to prefix it with the meeting uuid
+	 */
+	const participant = event.payload.object.participant;
+	return participant.id || `${event.payload.object.uuid}.${participant.user_id}`;
+};
 
-	if (zoomInfo.active) {
-		// Curently, the outer ternary is redundant because status is only set when zoomInfo.active is true
-		const status = zoomInfo.active
-			? hasSeenStart && participants.length >= 0
-				? `with ${
-						participants.length === 1 ? `1 person` : `${participants.length} people`
-				  } on Zoom`
-				: 'on Zoom'
-			: 'with nobody'; /* currently disabled */
+export async function processWebhookEvent(event: ZoomEvent) {
+	console.log(`Processing Zoom Webhook Event: ${event.event}`);
+	if (!PRODUCTION) console.log(JSON.stringify(event, null, 2));
 
-		console.log(`Setting Discord status to: ${status}`);
-		await discord.user?.setActivity(status, { type: 'PLAYING' });
-	} else {
-		console.log('Clearing Discord Status');
-		// This is the best way I can find to clear activity (bots cant have custom statuses)
-		await discord.user?.setActivity('', { type: 'CUSTOM_STATUS' });
-	}
-}
-
-export async function processWebhookEvent(discord: Client, event: ZoomEvent) {
-	console.log('Processing Zoom Webhook Event:');
-	console.log(JSON.stringify(event, null, 2));
+	const { id: meetingId } = event.payload.object;
 
 	// We toString both IDs because they're numerical and I don't want funny type errors.
-	if (event.payload.object.id.toString() !== ZOOM_MEETING_ID.toString()) {
-		console.log(`Webhook is for a different meeting (${event.payload.object.id}), ignoring.`);
+	if (!meetingId || meetingId.toString() !== ZOOM_MEETING_ID.toString()) {
+		console.log(`Webhook is for a different meeting (${meetingId}), ignoring.`);
 		return;
 	}
 
-	let zoomInfo: ZoomInfo;
+	await updateZoomStatus();
+
 	switch (event.event) {
-		// We don't want to trust Zoom's webhooks for synchronization reasons, so we re-fetch the status
+		// We don't want to trust Zoom's webhooks for synchronization reasons, so we re-fetch the status above
 		case 'meeting.started':
 		case 'meeting.ended': {
-			zoomInfo = await getZoomInfo();
 			break;
 		}
 		case 'meeting.participant_joined': {
-			zoomInfo = await getZoomInfo();
-			if (!zoomInfo.active) {
-				console.log(
-					'WARNING(webhook): Zoom participant joined while meeting was inactive. Ignoring.',
-				);
-				break;
-			}
-
-			participants.push({
-				name: event.payload.object.participant.user_name,
-				id: event.payload.object.participant.user_id,
-			});
-
-			if (
-				ZOOM_TIME_THRESHOLD &&
-				ZOOM_TIME_ANNOUNCEMENT_CHANNEL &&
-				participants.length === ZOOM_TIME_THRESHOLD &&
-				Date.now() - lastZoomTime >= ZOOM_TIME_DEBOUNCE_HOURS * 60 * 60 * 10000
-			) {
-				lastZoomTime = Date.now();
-				const participantsStr =
-					participants.length === 1
-						? participants[0].name
-						: `${participants
-								.slice(0, -1)
-								.map((p) => p.name)
-								.join(',')}, and ${participants[participants.length - 1].name}`;
-
-				await Promise.all(
-					discord.guilds.cache.map(async (guild) => {
-						const channel = guild.channels.cache.find(
-							(ch) =>
-								ch.name.toLowerCase() ===
-								ZOOM_TIME_ANNOUNCEMENT_CHANNEL?.toLowerCase(),
-						) as TextChannel | undefined;
-
-						if (!channel) return;
-
-						await channel.send(formatMessage(guild)`
-🚨 Paging everybody, ${participantsStr} are starting a call, it's ${`%Zoom Time`}! 🚨
-						`);
-					}),
-				);
-			}
+			const participant = event.payload.object.participant;
+			dispatch(
+				userJoin({
+					zoomId: getZoomUserIdFromEvent(event),
+					name: participant.user_name,
+					temporary: !participant.id,
+				}),
+			);
 			break;
 		}
 		case 'meeting.participant_left': {
-			zoomInfo = await getZoomInfo();
-			if (!zoomInfo.active) {
-				console.log(
-					'WARNING(webhook): Zoom participant left while meeting was inactive. Ignoring.',
-				);
-				break;
-			}
-
-			participants = participants.filter(
-				(participant) => participant.id !== event.payload.object.participant.user_id,
+			dispatch(
+				userLeave({
+					zoomId: getZoomUserIdFromEvent(event),
+					name: event.payload.object.participant.user_name,
+				}),
 			);
-
 			break;
 		}
 		default: {
 			throw new ResponseError(`Unknown Webhook Event!: ${(event as ZoomEvent).event}`, 400);
 		}
 	}
-	await updateDiscordStatusFromZoom(discord, zoomInfo);
 }
 
 type ZoomMeetingType =

@@ -15,7 +15,9 @@ export function panic(message?: string): never {
 export const formatUptime = (since: Date): string => {
 	const uptime = Date.now() - since.getTime();
 
-	const dateStr = since.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' });
+	const dateStr = since.toLocaleString('en-US', {
+		timeZone: 'America/Los_Angeles',
+	});
 
 	const days = Math.round(uptime / 1000 / 60 / 60 / 24);
 	const hours = Math.round((uptime / 1000 / 60 / 60) % 24);

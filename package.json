@@ -1,6 +1,6 @@
 {
 	"name": "hanbot",
-	"version": "1.4.2",
+	"version": "1.5.0",
 	"description": "A bot for the Olin Class of 2024",
 	"main": "dist/index.js",
 	"repository": "https://github.com/ariporad/hanbot",
@@ -8,14 +8,14 @@
 	"license": "MIT",
 	"private": true,
 	"scripts": {
-		"prestart": "yarn build",
+		"prestart": "npm run build",
 		"start": "node ./dist/index.js",
 		"build": "tsc",
 		"watch": "tsc --watch",
 		"clean": "rm -rf dist",
-		"predev": "yarn clean && yarn build",
+		"predev": "npm run clean && npm run build",
 		"dev": "concurrently -c bgBlue,bgGreen.black -k -n tsc,bot \"tsc --watch\" \"nodemon -w dist dist/index.js\"",
-		"travis": "yarn clean && yarn build",
+		"travis": "npm run clean && npm run build",
 		"lint": "prettier --write src/*.ts src/**/*.ts"
 	},
 	"devDependencies": {
@@ -26,13 +26,16 @@
 		"concurrently": "^5.2.0",
 		"nodemon": "^2.0.4",
 		"prettier": "^2.0.5",
-		"request": "^2.88.2",
 		"typescript": "^3.9.2"
 	},
 	"dependencies": {
+		"@reduxjs/toolkit": "^1.4.0",
 		"discord.js": "^12.2.0",
+		"dotenv": "^8.2.0",
 		"express": "^4.17.1",
 		"jsonwebtoken": "^8.5.1",
+		"redux": "^4.0.5",
+		"request": "^2.88.2",
 		"request-promise": "^4.2.5"
 	}
 }

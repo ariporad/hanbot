@@ -8,11 +8,9 @@ Hanbot is written in Typescript using [Discord.js][].
 
 ## Installation
 
-First, you'll need Node.js and yarn installed. I used node `12.13.1`.
+First, you'll need Node.js and NPM installed. I used node `12.13.1`.
 
-Then, clone the repo and run `yarn` to install the dependencies.
-
-I also use [direnv][] for managing environment variables, but that's optional.
+Then, clone the repo and run `npm install` to install the dependencies.
 
 ## Environment Variables
 
@@ -25,6 +23,7 @@ The bot authenticates to Discord as a bot user. Follow [these instructions][crea
 -   `$DISCORD_TOKEN`: The token for your bot user (**not** OAuth tokens).
 -   `$DISCORD_WELCOME_CHANNEL`: The name of the Discord channel to post welcome messages to. Don't set or leave blank to disable the welcome message. For Olin 2024 Mittens, we set this to `general`.
 -   `$DISCORD_ADMITTED_ROLE`: The name of the role to automatically add to every user who joins the server. Don't set or leave blank to prevent giving everyone a role. For Olin 2024 Mittens, we set this to `Admitted`.
+-   `$DISCORD_ZOOM_ACTIVE_ROLE`: The name of the role to add to users who are on Zoom. Don't set or leave blank to disable this feature. For Olin 2024 Mittens, we set this to `Zoomer`.
 
 ### Zoom
 
@@ -36,27 +35,29 @@ Register your JWT app with Zoom following [these instructions][zoom-setup]
 -   `$ZOOM_API_SECRET`: The Zoom JWT API Secret
 -   `$ZOOM_MEETING_ID`: The numerical Zoom meeting ID to monitor with the `!zoom` command. This is the same numerical meeting ID visible in the Zoom app. The Olin 2024 Zoom call is set up as a recurring Zoom call with no set frequency, which is to say that we always use the same call and the ID never changes.
 
+### Other
+
+-   `$PERSISTED_STATE_FILE`: The file to load/save state to. Used for restoring state after a restart or update.
+
 ## Environment Variable Management
 
-For convinence during development, I use [direnv][] to manage environment variables. This involves putting all the environment variables in a file called `.envrc` (see [`.envrc.example`](.envrc.example)), which is automagically loaded by your terminal. This file is gitignored for security.
-
-Unfortunately, this doesn't work when running from within VS Code. For that, we have to duplicate all of the environment variables into `.env`. It's important that both files are kept in sync.
+[dotenv][dotenv] is used to manage environment variables during development and in production. This involves putting all the environment variables in a file called `.env` (see [`.env.example`](.env.example)), which is loaded by the app at runtime. This file is gitignored for security.
 
 ## Building
 
-The project is compiled exclusively with `tsc`, which compiles every `.ts` file in `src/**/*` to a corresponding file in `dist/`. Just run `tsc` to compile the entire project (or run `yarn build`, which does the same thing).
+The project is compiled exclusively with `tsc`, which compiles every `.ts` file in `src/**/*` to a corresponding file in `dist/`. Just run `tsc` to compile the entire project (or run `npm run build`, which does the same thing).
 
-To clean the project, simply delete the `dist/` folder and everything in it (or run `yarn clean`).
+To clean the project, simply delete the `dist/` folder and everything in it (or run `npm run clean`).
 
-To have the compiler watch for and re-compile any changes, run `tsc --watch` or `yarn watch`.
+To have the compiler watch for and re-compile any changes, run `tsc --watch` or `npm run watch`.
 
 ## Running
 
-To run the bot, build as described above then run `node ./dist/index.js` or `yarn start` (which will build for you).
+To run the bot, build as described above then run `node ./dist/index.js` or `npm run start` (which will build for you).
 
 You can also run and debug from within VS Code, which will work properly with the VS Code debugger use the `Run` task (not the `Watch` task, which is buggy).
 
-In development, you can run `yarn dev`, which will clean the project, build, and run the bot. It will also watch changes, and subsequently recompile the project and reboot the bot.
+In development, you can run `npm run dev`, which will clean the project, build, and run the bot. It will also watch changes, and subsequently recompile the project and reboot the bot.
 
 For development purposes, we use the `@Hanbot Beta#9729` user. It's possible that multiple instances may be running at the same time.
 
@@ -64,11 +65,11 @@ For development purposes, we use the `@Hanbot Beta#9729` user. It's possible tha
 
 ## Hosting
 
-The bot running on Discord as `@Hanbot#9541` is hosted on Heroku [here][heroku-live]. It's owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]>. Feel free to contact him (or ping him on the Discord) if something's gone wrong or if you have questions.
+The bot running on Discord as `@Hanbot#9541` is hosted on a VPS [here][hanbot-live]. The bot is owned by Ari Porad ([@ariporad][]) <[ari@ariporad.com][]> and Elvis Wolcott ([@elviswolcott][]) owns the VPS. Feel free to contact them (or ping them on the Discord) if something's gone wrong or if you have questions.
 
-All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to Heroku. This usually takes only a few minutes.
+All commits to `master` on this repo are automatically built by [Travis CI][travis-ci], which compiles the Typescript and deploys to the VPS. This usually takes only a few minutes.
 
-**An Important Note:** Heroku restarts every dyno every ~24 hours. It's important that this reboot does not occur during the times of 6PM-6AM ET (the times when we are usually on Zoom), because if it does, it will lose track of the current Zoom status. To reset this cycle, just run `heroku ps:restart -a olin-2024-hanbot` some time in the morning or early afternoon ET. (See [#1](https://github.com/ariporad/hanbot/issues/1))
+The VPS is running Ubuntu 18 with [pm2][], NodeJS, and NGINX as the reverse proxy.
 
 ## Contributing
 
@@ -76,7 +77,7 @@ Please feel free to contribute to Hanbot! This bot belongs to all of us, and I'd
 
 If you need help, feel free to reach out to me on Discord (I'm `Ari (Han X)`).
 
-If you do contribute code, please make sure that your code works, and run `yarn lint` to ensure it's formatted properly (using [prettier][]). Ping me on the Discord and I'll set you up with the relevant credentials and tokens for testing your changes.
+If you do contribute code, please make sure that your code works, and run `npm run lint` to ensure it's formatted properly (using [prettier][]). Ping me on the Discord and I'll set you up with the relevant credentials and tokens for testing your changes.
 
 ## License
 
@@ -91,12 +92,14 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [discord.js]: https://discord.js.org/
-[direnv]: https://direnv.net/
+[dotenv]: https://github.com/motdotla/dotenv
 [zoom-setup]: https://marketplace.zoom.us/docs/guides/build/jwt-app
 [create-bot-user]: https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot
 [add-bot-to-server]: https://discordjs.guide/preparations/adding-your-bot-to-servers.html
-[heroku-live]: https://olin-2024-hanbot.herokuapp.com/
+[hanbot-live]: https://hanbot.elviswolcott.com/
 [@ariporad]: https://github.com/ariporad
+[@elviswolcott]: https://github.com/elviswolcott
 [ari@ariporad.com]: mailto:ari@ariporad.com?subject=Hanbot
 [travis-ci]: https://travis-ci.com/github/ariporad/hanbot
+[pm2]: https://pm2.keymetrics.io/
 [prettier]: https://prettier.io/

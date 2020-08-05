@@ -1,39 +1,43 @@
 import Discord from 'discord.js';
-import { getZoomInfo, ZoomInfo } from '../zoom';
+import { getState } from '../store';
+import { getIsActive, getHasSeenStart, getOnlineUsers, getJoinUrl } from '../store/zoom';
 
-async function generateZoomStatus(zoomInfo?: ZoomInfo): Promise<string> {
-	const { active, participants, hasSeenStart } = zoomInfo || (await getZoomInfo());
+function generateZoomStatus(): string {
+	const state = getState();
+	const active = getIsActive(state);
+	const hasSeenStart = getHasSeenStart(state);
+	const onlineUsers = getOnlineUsers(state);
 
-	const participantsNumberStr =
-		participants.length === 1 ? participants[0].name : `these ${participants.length} people`;
+	const onlineUsersNumberStr =
+		onlineUsers.length === 1 ? onlineUsers[0].name : `these ${onlineUsers.length} people`;
 
 	return !active
 		? "There's nobody on Zoom right now. If you wanted, you could ping `@here` or `@Zoom Time` to see if anyone wants to talk. Then, just click the link to join the Zoom call."
-		: !hasSeenStart || participants.length === 0
+		: !hasSeenStart || onlineUsers.length === 0
 		? `There are some people on the Zoom call right now, so hop on! (If I told you who, I'd have to kill you.)`
-		: `Come join ${participantsNumberStr} on Zoom!${
-				participants.length < 2
+		: `Come join ${onlineUsersNumberStr} on Zoom!${
+				onlineUsers.length < 2
 					? ''
-					: '\n' + participants.map(({ name }) => `\n\t- ${name}`).join('')
+					: '\n' + onlineUsers.map(({ name }) => `\n\t- ${name}`).join('')
 		  }`;
 }
 
-export async function zoomInfo(args: string, message: Discord.Message) {
-	const info = await getZoomInfo();
+export function zoomInfo(args: string, message: Discord.Message) {
+	const joinUrl = getJoinUrl(getState());
 
 	return `
 On Wednesdays, we play Jackbox on Zoom! (and on other days too.)
 
 Most evenings (generally between 10PM and 5AM ET), we hang out on Zoom to talk and play games (most commonly, The Jackbox Party Pack).
 
-Our standing Zoom meeting can be found here: ${info.meetingInfo.join_url}
+Our standing Zoom meeting can be found here: ${joinUrl}
 
-${await generateZoomStatus(info)}
+${generateZoomStatus()}
 
 Want to get a ping whenever people are on Zoom? Give yourself the \`Zoom Time\` roll!`.trim();
 }
 
 export async function zoomStatus(args: string, message: Discord.Message) {
-	const info = await getZoomInfo();
-	await message.reply(`${await generateZoomStatus(info)}\n\nLink: ${info.meetingInfo.join_url}`);
+	const joinUrl = getJoinUrl(getState());
+	await message.reply(`${generateZoomStatus()}\n\nLink: ${joinUrl}`);
 }
