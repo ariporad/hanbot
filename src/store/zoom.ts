@@ -134,9 +134,9 @@ const getLastZoomTime = createSelector(getZoomInfo, (zoomInfo) => zoomInfo.lastZ
 
 const getUserByName = (zoomName: string) =>
 	createSelector(getZoomInfo, (zoomInfo) => {
-		const match = Object.values(zoomInfo.byId).find(
-			({ name }) => name.toLowerCase() === zoomName.toLowerCase(),
-		);
+		const match = Object.values(zoomInfo.byId)
+			.sort((a, b) => (a.discordId === b.discordId ? 0 : b.discordId ? -1 : 1))
+			.find(({ name }) => name.toLowerCase() === zoomName.toLowerCase());
 		if (match) {
 			return {
 				...match,
