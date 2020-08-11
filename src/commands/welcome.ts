@@ -27,7 +27,9 @@ Make sure to share your Instagram/Snapchat/whatever in ${'#social-media'}.
 
 Most evenings from 10PM-2AM ET, we hang out and play games on Zoom. Find more info and the link in ${'zoom'} (and/or use the \`!zoominfo\` command). You can see if anyone is on Zoom right now with the \`!zoom\` command or by looking at my (${`@Hanbot`}'s) Discord status.
 
-Finally, please assign yourself roles (class, time zone, city, major, pronouns, etc.) by clicking on your name.
+Please assign yourself roles (class, time zone, city, major, pronouns, etc.) by clicking on your name.
+
+Finally, add your housing assignment to this spreadsheet, which we're using to keep track and predict household groups: https://docs.google.com/spreadsheets/d/1Y52VkBz0Gf1dGuMza4RJs3yYf3oK7Igwj8Myx7Xge6c/edit#gid=0 
 
 Wondering why everyone is named Han? Well, we have a cult. Ask our glorious leader, Han, for more details and for how to join!
 `);
