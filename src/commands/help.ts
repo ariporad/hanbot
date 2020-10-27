@@ -16,6 +16,7 @@ Commands:
 - \`!help\`: Show this message.
 - \`!welcome\`: Demonstrate the welcome message sent to new users.
 - \`!debuginfo\`: Dump lots of information that might be helpful for debugging.
+- \`!statushistory [opt-in|opt-out|@user]\`: Discord status message history tracking. Opt in/out or view history.
 
 I was built by ${'@Ari (Han X)'} in the service of our glorious leader, Han. Ping ${'%Bot Builder'} if I'm acting up or if you need help. My code is available on Github, and PRs are welcome if you'd like to add functionality: https://github.com/ariporad/hanbot.
 

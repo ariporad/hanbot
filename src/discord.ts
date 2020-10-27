@@ -15,6 +15,7 @@ import {
 	ZOOM_TIME_DEBOUNCE_HOURS,
 } from './config';
 import { formatMessage } from './helpers';
+import { userStatusMessageUpdate } from './store/statusMessageTracker';
 
 const getOnlineDiscordUsers = createSelector(getOnlineUsers, (onlineUsers) => {
 	return onlineUsers.map((user) => user.discordId).filter((x) => !!x);
@@ -137,5 +138,24 @@ export const registerDiscordStatusSubscriptions = (discord: Client) => {
 				await discord.user?.setActivity('', { type: 'CUSTOM_STATUS' });
 			}
 		});
+	});
+
+	// track custom status/presence messages
+	discord.on('presenceUpdate', async (oldPresence, newPresence) => {
+		const activity = newPresence.activities.find(
+			(activity) => activity.type === 'CUSTOM_STATUS',
+		);
+
+		if (!activity || !activity.state) return;
+
+		console.log('got new activity:', newPresence.member?.user.username, activity.state);
+
+		dispatch(
+			userStatusMessageUpdate({
+				timestamp: activity.createdTimestamp,
+				discordId: newPresence.userID,
+				message: activity.state,
+			}),
+		);
 	});
 };

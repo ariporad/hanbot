@@ -16,9 +16,8 @@ export const formatUptime = (since: Date): string => {
 	const uptime = Date.now() - since.getTime();
 
 	const dateStr = since.toLocaleString('en-US', {
-		timeZone: 'America/Los_Angeles',
+		timeZone: 'America/New_York',
 	});
-
 	const days = Math.round(uptime / 1000 / 60 / 60 / 24);
 	const hours = Math.round((uptime / 1000 / 60 / 60) % 24);
 	const minutes = Math.round((uptime / 1000 / 60) % 60);

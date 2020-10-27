@@ -2,9 +2,13 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { readFileSync, promises as fs } from 'fs';
 import { version as latest, PERSISTED_STATE_FILE } from '../config';
 import zoomInfoReducer, { name as zoomInfoSlice } from './zoom';
+import statusMessageTrackerReducer, {
+	name as statusMessageTrackerSlice,
+} from './statusMessageTracker';
 
 const rootReducer = combineReducers({
 	[zoomInfoSlice]: zoomInfoReducer,
+	[statusMessageTrackerSlice]: statusMessageTrackerReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
