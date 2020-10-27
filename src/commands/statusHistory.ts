@@ -13,11 +13,21 @@ export default function statusHistory(args: string, message: Discord.Message) {
 	const state = getState();
 
 	if (name === 'opt in' || name === 'opt-in') {
+		if (getUserIsOptedIn(message.author.id)(getState())) {
+			return formatMessage(message.guild || panic())`
+				${message.author} You've already opted in to status history tracking! You view your history by sending "!statushistory ${message.author}". If you ever want to opt out in the future, simply send \`!statushistory opt-out\` to opt out and delete all history.
+			`;
+		}
 		dispatch(userOptIn({ discordId: message.author.id }));
 		return formatMessage(message.guild || panic())`
 			${message.author} You've opted in to status history tracking! From now on, any custom text set as your Discord status will be recorded! You (and anyone else) can view this log by sending "!statushistory ${message.author}". If you ever want to opt out in the future, simply send \`!statushistory opt-out\` to opt out and delete all history.
 		`;
 	} else if (name === 'opt out' || name === 'opt-out') {
+		if (!getUserIsOptedIn(message.author.id)(getState())) {
+			return formatMessage(message.guild || panic())`
+				${message.author} You've never opted in to status history tracking!
+			`;
+		}
 		dispatch(userOptOut({ discordId: message.author.id }));
 		return formatMessage(message.guild || panic())`
 			${message.author} You've opted out of status history tracking! All previous Discord statuses have been erased and no future statuses will be recorded. To opt-in again, send \`!statushistory opt-in\`.

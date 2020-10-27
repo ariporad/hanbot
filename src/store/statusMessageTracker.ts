@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { stat } from 'fs';
 import { RootState } from '.';
 
 interface StatusMessageTrackerState {
@@ -33,6 +34,7 @@ const { reducer, actions, name } = createSlice({
 	reducers: {
 		userOptIn: (state, { payload }: UserOptInAction) => {
 			state.optedInIDs.push(payload.discordId);
+			state.byDiscordId[payload.discordId] = [];
 		},
 
 		userOptOut: (state, { payload }: UserOptOutAction) => {
@@ -47,7 +49,12 @@ const { reducer, actions, name } = createSlice({
 
 			const history = state.byDiscordId[payload.discordId];
 
-			if (history[history.length - 1].message.trim() === payload.message.trim()) return;
+			if (
+				history.length >= 1 &&
+				history[history.length - 1].message.trim() === payload.message.trim()
+			) {
+				return;
+			}
 
 			history.push({
 				timestamp: payload.timestamp,
@@ -66,7 +73,7 @@ const getUserIsOptedIn = (discordId: string) =>
 	createSelector(getStatusMessageState, (state) => state.optedInIDs.includes(discordId));
 
 const getStatusMessageHistoryForUser = (discordId: string) =>
-	createSelector(getStatusMessageState, (state) => state.byDiscordId[discordId]);
+	createSelector(getStatusMessageState, (state) => state.byDiscordId[discordId] || []);
 
 export const { userOptIn, userOptOut, userStatusMessageUpdate } = actions;
 export { getUserIsOptedIn, getStatusMessageHistoryForUser };
