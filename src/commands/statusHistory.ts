@@ -15,7 +15,7 @@ export default function statusHistory(args: string, message: Discord.Message) {
 	if (name === 'opt in' || name === 'opt-in') {
 		dispatch(userOptIn({ discordId: message.author.id }));
 		return formatMessage(message.guild || panic())`
-			${message.author} You've opted in to status history tracking! From now on, any custom text set as your Discord status will be recorded! You (and anyone else) can view this log by sending \`!statushistory ${message.author}\`. If you ever want to opt out in the future, simply send \`!statushistory opt-out\` to opt out and delete all history.
+			${message.author} You've opted in to status history tracking! From now on, any custom text set as your Discord status will be recorded! You (and anyone else) can view this log by sending "!statushistory ${message.author}". If you ever want to opt out in the future, simply send \`!statushistory opt-out\` to opt out and delete all history.
 		`;
 	} else if (name === 'opt out' || name === 'opt-out') {
 		dispatch(userOptOut({ discordId: message.author.id }));
