@@ -60,7 +60,7 @@ export async function getDebugInfo(): Promise<string> {
 			'',
 			[
 				'This Message Generated At',
-				new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }) + ' PT',
+				new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }) + ' ET',
 			],
 		] as (string | [string, string])[])
 			// Ignore falsey values to enable x && [...]
