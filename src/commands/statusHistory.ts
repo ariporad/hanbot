@@ -4,13 +4,14 @@ import { formatMessage, panic } from '../helpers';
 import {
 	getStatusMessageHistoryForUser,
 	getUserIsOptedIn,
+	handlePresence,
 	userOptIn,
 	userOptOut,
+	userStatusMessageUpdate,
 } from '../store/statusMessageTracker';
 
 export default function statusHistory(args: string, message: Discord.Message) {
 	const name = args.trim();
-	const state = getState();
 
 	if (name === 'opt in' || name === 'opt-in') {
 		if (getUserIsOptedIn(message.author.id)(getState())) {
@@ -19,6 +20,7 @@ export default function statusHistory(args: string, message: Discord.Message) {
 			`;
 		}
 		dispatch(userOptIn({ discordId: message.author.id }));
+		dispatch(handlePresence(message.author.presence));
 		return formatMessage(message.guild || panic())`
 			${message.author} You've opted in to status history tracking! From now on, any custom text set as your Discord status will be recorded! You (and anyone else) can view this log by sending "!statushistory ${message.author}". If you ever want to opt out in the future, simply send \`!statushistory opt-out\` to opt out and delete all history.
 		`;
@@ -45,14 +47,18 @@ export default function statusHistory(args: string, message: Discord.Message) {
 
 		return formatMessage(message.guild || panic())`
 Discord Status Message History for ${user}:
-${history
-	.map(
-		({ timestamp, message }) =>
-			`- ${message} (${new Date(timestamp).toLocaleString('en-US', {
-				timeZone: 'America/New_York',
-			})})`,
-	)
-	.join('\n')}
+${
+	history.length === 0
+		? '_None Yet! Try setting a custom Discord status!_'
+		: history
+				.map(
+					({ timestamp, message }) =>
+						`- ${message} (${new Date(timestamp).toLocaleString('en-US', {
+							timeZone: 'America/New_York',
+						})})`,
+				)
+				.join('\n')
+}
 		`;
 	}
 }

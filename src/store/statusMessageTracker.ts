@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector, ThunkAction } from '@reduxjs/toolkit';
+import { Presence } from 'discord.js';
 import { stat } from 'fs';
 import { RootState } from '.';
 
@@ -74,6 +75,22 @@ const getUserIsOptedIn = (discordId: string) =>
 
 const getStatusMessageHistoryForUser = (discordId: string) =>
 	createSelector(getStatusMessageState, (state) => state.byDiscordId[discordId] || []);
+
+export const handlePresence = (
+	presence: Presence,
+): ThunkAction<void, RootState, any, UserStatusMessageUpdateAction> => (dispatch, getState) => {
+	const activity = presence.activities.find((activity) => activity.type === 'CUSTOM_STATUS');
+
+	if (!activity || !activity.state) return;
+
+	return dispatch(
+		userStatusMessageUpdate({
+			timestamp: activity.createdTimestamp,
+			discordId: presence.userID,
+			message: activity.state,
+		}),
+	);
+};
 
 export const { userOptIn, userOptOut, userStatusMessageUpdate } = actions;
 export { getUserIsOptedIn, getStatusMessageHistoryForUser };
